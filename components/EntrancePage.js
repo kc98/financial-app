@@ -12,7 +12,7 @@ export default function EntrancePage() {
       <Content padder scrollEnabled={false}>
         <View>
           <View style={{ border: "solid pink 3px" }}>
-            <I
+            <AutoHeightImage
               style={styles.logo}
               width={300}
               source={require("../img/logo.png")}
