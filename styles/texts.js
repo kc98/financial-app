@@ -1,13 +1,14 @@
 import { StyleSheet } from "react-native";
 
 const texts = StyleSheet.create({
-  buttonText: {
+  montserratBold: {
     fontFamily: "Montserrat_Bold",
-    fontSize: 18,
   },
-  center: {
-    alignSelf: "center",
-    justifyContent: "center",
+  montserratRegular: {
+    fontFamily: "Montserrat_Regular",
+  },
+  buttonText: {
+    fontSize: 18,
   },
 });
 

@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import React from "react";
 import { Asset, AppLoading } from "expo";
 import {
@@ -13,8 +14,14 @@ import {
 } from "native-base";
 import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import EntrancePage from "./components/EntrancePage";
+import SignUp from "./components/SignUp";
+import LogIn from "./components/LogIn";
+
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
   constructor(props) {
@@ -50,6 +57,18 @@ export default class App extends React.Component {
       return <AppLoading />;
     }
 
-    return <EntrancePage />;
+    return (
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="EntrancePage" component={EntrancePage} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="LogIn" component={LogIn} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
   }
 }
