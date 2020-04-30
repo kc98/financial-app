@@ -10,6 +10,9 @@ const texts = StyleSheet.create({
   buttonText: {
     fontSize: 18,
   },
+  underline: {
+    textDecorationLine: "underline",
+  },
 });
 
 export { texts };

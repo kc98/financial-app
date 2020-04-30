@@ -20,6 +20,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import EntrancePage from "./components/EntrancePage";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
+import TransactionList from "./components/TransactionList";
 
 const Stack = createStackNavigator();
 
@@ -67,6 +68,7 @@ export default class App extends React.Component {
           <Stack.Screen name="EntrancePage" component={EntrancePage} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="LogIn" component={LogIn} />
+          <Stack.Screen name="TransactionList" component={TransactionList} />
         </Stack.Navigator>
       </NavigationContainer>
     );

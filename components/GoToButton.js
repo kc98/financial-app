@@ -12,7 +12,11 @@ export default function GoToButton(props) {
     case "primary":
       return (
         <Button
-          style={[styleSheetMain.primaryButton, props.buttonStyle]}
+          style={[
+            { padding: 10 },
+            styleSheetMain.primaryButton,
+            props.buttonStyle,
+          ]}
           onPress={() => {
             return navigation.navigate(props.navigateTo);
           }}

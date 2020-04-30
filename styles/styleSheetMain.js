@@ -25,10 +25,15 @@ const styleSheetMain = StyleSheet.create({
     ...alignments.center,
     ...widths.width_60,
     ...buttons.radius_25,
-    borderRadius: 35,
   },
   secondaryButton: {
     ...buttons.secondary,
+    ...alignments.center,
+    ...widths.width_60,
+    ...buttons.radius_25,
+  },
+  hoverButton: {
+    ...buttons.hover,
     ...alignments.center,
     ...widths.width_60,
     ...buttons.radius_25,
@@ -51,6 +56,15 @@ const styleSheetMain = StyleSheet.create({
   labelBlack: {
     ...colors.black,
     ...texts.montserratRegular,
+  },
+  underlineGrey: {
+    ...texts.underline,
+    ...colors.dimgrey,
+  },
+  errorTextLogIn: {
+    ...colors.red,
+    marginLeft: "5%",
+    marginRight: "5%",
   },
 });
 

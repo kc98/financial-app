@@ -34,6 +34,15 @@ export default function EntrancePage({ navigation }) {
               navigateTo="LogIn"
               buttonStyle={{ marginTop: 64 }}
             />
+
+            {/* <Text
+              onPress={() => {
+                return navigation.navigate("TransactionList");
+              }}
+              style={{ marginTop: 40, ...styleSheetMain.underlineGrey }}
+            >
+              Explore as Guest
+            </Text> */}
           </View>
         </Row>
       </Grid>

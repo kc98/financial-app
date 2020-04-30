@@ -10,6 +10,12 @@ const colors = StyleSheet.create({
   black: {
     color: "#000",
   },
+  dimgrey: {
+    color: "#696969",
+  },
+  red: {
+    color: "#FF0000",
+  },
 });
 
 export { colors };

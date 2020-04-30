@@ -9,8 +9,17 @@ const buttons = StyleSheet.create({
     borderWidth: 2.2,
     borderColor: "#46C553",
   },
+  hover: {
+    backgroundColor: "#8ede96",
+  },
   radius_25: {
     borderRadius: 25,
+  },
+  containerEnabled: {
+    opacity: 1,
+  },
+  containerDisabled: {
+    opacity: 0.3,
   },
 });
 
