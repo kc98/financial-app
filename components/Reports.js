@@ -26,12 +26,12 @@ import { colors } from "../styles/colors";
 import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
-export default function TransactionList({ navigation, navigationOptions }) {
+export default function Reports({ navigation }) {
   return (
     <Container>
       <Header transparent />
       <Content>
-        <Text>Love my wifey</Text>
+        <Text>This is report page</Text>
       </Content>
     </Container>
   );

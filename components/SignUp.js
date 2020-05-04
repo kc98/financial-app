@@ -69,9 +69,7 @@ export default function SignUp({ navigation }) {
     return;
   };
 
-  {
-    /*handle input value on change*/
-  }
+  //handle input value on change
   const handleFirstNameValueOnChange = (event) => {
     let inputFirstName = event.nativeEvent.text;
     setFirstName(inputFirstName);
@@ -97,9 +95,7 @@ export default function SignUp({ navigation }) {
     setConfirmPassword(inputConfirmPassword);
   };
 
-  {
-    /*handle input on blur*/
-  }
+  //handle input on blur
   const handleFirstNameBlur = () => {
     setFirstNameTouched(true);
   };
@@ -128,17 +124,18 @@ export default function SignUp({ navigation }) {
       !password ||
       !confirmPassword
     ) {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
+      setFirstName(null);
+      setLastName(null);
+      setEmail(null);
+      setPassword(null);
+      setConfirmPassword(null);
     } else {
-      // alert(firstName + " signed up successfully");
-      Alert.alert("Signed Up Successful", "Welcome " + firstName + "!", [
-        { text: "OK" },
-      ]);
-      return navigation.navigate("TransactionList");
+      Alert.alert(
+        "Welcome " + firstName + "!",
+        " You have signed up successfully",
+        [{ text: "OK" }]
+      );
+      return navigation.navigate("MainPage");
     }
   };
 
@@ -147,13 +144,7 @@ export default function SignUp({ navigation }) {
 
   return (
     <Container>
-      <Header transparent>
-        <Left>
-          <GoToButton type="goBack" />
-        </Left>
-        <Body />
-        <Right />
-      </Header>
+      <Header transparent />
       <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
         <ScrollView style={{ flex: 1 }}>
           <View style={{ flex: 2 }}>
@@ -271,6 +262,9 @@ export default function SignUp({ navigation }) {
               >
                 {!confirmPassword && confirmPasswordTouched
                   ? "Confirm Password is required"
+                  : ""}
+                {!(confirmPassword === password) && confirmPassword && password
+                  ? "Password does not match"
                   : ""}
               </Text>
             </Form>

@@ -65,22 +65,16 @@ export default function LogIn({ navigation }) {
 
   const handleLogInOnSubmit = () => {
     if (!email || !password) {
-      setEmail("");
-      setPassword("");
+      setEmail(null);
+      setPassword(null);
     } else {
-      return navigation.navigate("TransactionList");
+      return navigation.navigate("MainPage");
     }
   };
 
   return (
     <Container>
-      <Header transparent>
-        <Left>
-          <GoToButton type="goBack" />
-        </Left>
-        <Body />
-        <Right />
-      </Header>
+      <Header transparent />
       <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <View style={{ flex: 4 }}>
@@ -95,7 +89,7 @@ export default function LogIn({ navigation }) {
           </View>
           <View
             style={{
-              flex: 3,
+              flex: 4,
               marginLeft: "12%",
               marginRight: "12%",
             }}
@@ -142,10 +136,10 @@ export default function LogIn({ navigation }) {
               </Text>
             </Form>
           </View>
-          <View style={{ flex: 2 }}>
+          <View style={{ flex: 1 }}>
             <TouchableOpacity
               style={[
-                { padding: 10 },
+                { padding: 10, marginTop: 10 },
                 email && password
                   ? styleSheetMain.primaryButton
                   : styleSheetMain.hoverButton,

@@ -1,0 +1,70 @@
+(TOP LEVEL - ONLY EAT) -> Can add other categories as needed later
+Jan
+- Morning Avg: 139.5
+- Afternoon Avg: 186
+- Night Avg: 155
+
+Feb
+- Morning Avg: 122
+- Afternoon Avg: 111.6
+- Night Avg: 154
+
+Mar
+- Morning Avg: 170.5
+- Afternoon Avg: 248
+- Night Avg: 124
+
+Apr
+- Insight Budget Suggestion: 470 <- Avg of total spent for previous three months
+- Morning Avg Insight (0.3): 145  <- % of budget based on spent previously where x = (((Morning1 + Morning2 + Morning3) / 3) / ThreeMonthPrvAvg) * (Suggestion OR Budget)
+- Afternoon Avg Insight (0.38): 180
+- Night Avg Insight (leftover): 145
+
+- Insight Budget User Selected: 400
+- Morning Avg Insight (0.3): 120 
+- Afternoon Avg Insight (0.38): 152 -> 150 (round up/down)
+- Night Avg Insight (leftover): 130
+
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+May
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Jun
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Jul
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Aug
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Sep
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Oct
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Nov
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
+
+Dec
+- Morning Avg:
+- Afternoon Avg:
+- Night Avg:
