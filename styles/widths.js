@@ -7,6 +7,9 @@ const widths = StyleSheet.create({
   width_80: {
     width: "80%",
   },
+  width_100: {
+    width: "100%",
+  },
 });
 
 export { widths };

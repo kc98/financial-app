@@ -6,6 +6,11 @@ const alignments = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  centerRight: {
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
 });
 
 export { alignments };

@@ -23,9 +23,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { texts } from "../styles/texts";
-import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
 export default function LogIn({ navigation }) {
@@ -76,8 +76,13 @@ export default function LogIn({ navigation }) {
     <Container>
       <Header transparent />
       <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <View style={{ flex: 4 }}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            // justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flex: 3 }}>
             <Image
               style={{
                 marginTop: "6%",
@@ -89,7 +94,7 @@ export default function LogIn({ navigation }) {
           </View>
           <View
             style={{
-              flex: 4,
+              flex: 3,
               marginLeft: "12%",
               marginRight: "12%",
             }}
@@ -136,7 +141,7 @@ export default function LogIn({ navigation }) {
               </Text>
             </Form>
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 2 }}>
             <TouchableOpacity
               style={[
                 { padding: 10, marginTop: 10 },
@@ -150,7 +155,7 @@ export default function LogIn({ navigation }) {
               <Text style={[styleSheetMain.primaryButtonText]}>Log In</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAwareScrollView>
     </Container>
   );

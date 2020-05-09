@@ -20,7 +20,7 @@ function Chatbot() {
   return (
     <Button transparent>
       <Icon
-        style={[colors.primary, { marginRight: -8 }]}
+        style={[colors.tertiary, { marginRight: -8 }]}
         type="MaterialCommunityIcons"
         name="robot"
       />
@@ -109,8 +109,8 @@ export default class App extends React.Component {
 
     return (
       <NavigationContainer>
-        {/* REMEMBER REMOVE initialRouteName="TransactionList"*/}
-        <Stack.Navigator>
+        {/* REMEMBER REMOVE initialRouteName="MainPage"*/}
+        <Stack.Navigator initialRouteName="MainPage">
           <Stack.Screen
             options={{
               header: () => null,
