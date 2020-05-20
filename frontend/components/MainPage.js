@@ -1,10 +1,11 @@
 import React from "react";
-import TransactionList from "./TransactionList";
+import TransactionListPage from "./TransactionListPage";
 import Reports from "./Reports";
 import { Icon } from "native-base";
 
 import { colors } from "../styles/colors";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { CommonActions } from "@react-navigation/native";
 import AddTransactionPage from "./AddTransactionPage";
 import InsightsPage from "./InsightsPage";
 import UserProfilePage from "./UserProfilePage";
@@ -12,6 +13,12 @@ import UserProfilePage from "./UserProfilePage";
 const Tab = createBottomTabNavigator();
 
 export default function MainPage({ navigation, route }) {
+  // console.log(navigation);
+  // navigation.reset({
+  //   index: 0,
+  //   routes: [],
+  // });
+
   if (route.state) {
     let currentScreenName = route.state.routes[route.state.index].name;
 
@@ -47,7 +54,7 @@ export default function MainPage({ navigation, route }) {
           ),
         }}
         name="Transactions"
-        component={TransactionList}
+        component={TransactionListPage}
       />
       <Tab.Screen
         options={{

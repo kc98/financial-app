@@ -8,8 +8,14 @@ const texts = StyleSheet.create({
   montserratRegular: {
     fontFamily: "Montserrat_Regular",
   },
+  font_26: {
+    fontSize: 26,
+  },
   font_18: {
     fontSize: 18,
+  },
+  font_14: {
+    fontSize: 14,
   },
   font_15: {
     fontSize: 15,

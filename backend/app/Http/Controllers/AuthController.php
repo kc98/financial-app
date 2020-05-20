@@ -9,8 +9,6 @@ use App\User;
 
 class AuthController extends Controller
 {
-    // login and logout -> POST
-    // me -> GET
     public function login()
     {
         $credentials = request(['email', 'password']);

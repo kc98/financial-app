@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
 import React from "react";
+import { BackHandler } from "react-native";
 import { Asset, AppLoading } from "expo";
 import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
@@ -73,8 +74,16 @@ export default class App extends React.Component {
     };
   }
 
+  handleBackButton() {
+    BackHandler.exitApp();
+  }
+
   componentDidMount() {
     this._loadFontsAsync();
+    BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.handleBackButton.bind(this)
+    );
   }
 
   async componentDidMount() {
@@ -110,7 +119,7 @@ export default class App extends React.Component {
 
     return (
       <NavigationContainer>
-        {/* REMEMBER REMOVE initialRouteName="MainPage"*/}
+        {/* REMEMBER REMOVE initialRouteName="MainPage" */}
         <Stack.Navigator initialRouteName="MainPage">
           <Stack.Screen
             options={{
@@ -123,11 +132,13 @@ export default class App extends React.Component {
             options={this.backButtonHeader}
             name="SignUp"
             component={SignUp}
+            setIsLoggedIn={this.setIsLoggedIn}
           />
           <Stack.Screen
             options={this.backButtonHeader}
             name="LogIn"
             component={LogIn}
+            setIsLoggedIn={this.setIsLoggedIn}
           />
           <Stack.Screen
             options={{

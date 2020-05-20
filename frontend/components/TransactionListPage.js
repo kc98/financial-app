@@ -211,17 +211,6 @@ export default function TransactionList() {
               </Col>
             </Row>
             <Row style={{ paddingLeft: 10, marginBottom: 20 }}>
-              <Col style={{ width: 65 }}>
-                <View style={styleSheetMain.transactionCatrgoryImage}>
-                  <Image
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                    }}
-                    source={require("../img/food.png")}
-                  />
-                </View>
-              </Col>
               <Col>
                 <Row>
                   <Text style={{ fontSize: 14, fontWeight: "bold" }}>
@@ -243,18 +232,6 @@ export default function TransactionList() {
               </Col>
             </Row>
             <Row style={{ paddingLeft: 10, marginBottom: 20 }}>
-              <Col style={{ width: 65 }}>
-                <View style={styleSheetMain.transactionCatrgoryImage}>
-                  <Image
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                    }}
-                    source={require("../img/movie.png")}
-                  />
-                </View>
-              </Col>
-
               <Col>
                 <Row>
                   <Text style={{ fontSize: 14, fontWeight: "bold" }}>

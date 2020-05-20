@@ -8,17 +8,7 @@ import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
-import selectImg from "../img/ImgSelector";
-
 export default function TransactionContainer(props) {
-  // let transactionImage = "('../img/" + props.transactionCategory + ".png')";
-  // let transactionImage = `../img/${props.transactionCategory}.png`;
-  let transactionImage = `../img/movie.png`;
-  let testVar = require(`../img/movie.png`);
-  console.log(typeof testVar, testVar);
-  console.log(typeof transactionImage);
-  console.log(transactionImage);
-
   let x = props.transactionCategory;
   return (
     <Col style={[styleSheetMain.transactionListContainer, { marginTop: 40 }]}>
@@ -54,19 +44,7 @@ export default function TransactionContainer(props) {
         </Col>
       </Row>
 
-      <Row style={{ paddingLeft: 10, marginBottom: 10 }}>
-        <Col style={{ width: 65 }}>
-          <View style={styleSheetMain.transactionCatrgoryImage}>
-            <Image
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-              source={require("../img/" + "movie.png")}
-            />
-          </View>
-        </Col>
-
+      <Row style={{ paddingLeft: 10, marginBottom: 15 }}>
         <Col>
           <Row>
             <Text style={{ fontSize: 14, fontWeight: "bold" }}>Grocery</Text>

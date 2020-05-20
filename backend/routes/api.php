@@ -25,17 +25,25 @@ use Illuminate\Support\Facades\Route;
 /**
  * Scenarios
  * Phase 1: Basic budget app
- * 1. User can login
- * 2. New user can sign up
- * 3. User can check transaction list
- * 4. User can check old transaction list
- * 5. User can manage (create, read, update, delete) their own transaction
- * 6. User can logout
- * 7. User can edit their profile (name, email and password)
+ * 1. [X] User can login
+ * 2. [X] New user can sign up
+ * 3. [ ] User can check transaction list
+ * 4. [ ] User can check old transaction list
+ * 5. [ ] User can manage (create, read, update, delete) their own transaction
+ * 6. [ ] User can logout
+ * 7. [ ] User can edit their profile (name, email and password)
  */
 Route::post('/login', 'AuthController@login');
 Route::post('/signup', 'AuthController@signup');
-Route::get('/me', 'AuthController@me')->middleware('auth:api');
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('/me', 'AuthController@me');
+    Route::get('/transactions', 'TransactionController@index'); // Browse
+    // Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read
+    // Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit
+    // Route::post('/transactions', 'TransactionController@store'); // Add
+    // Route::delete('/transactions/{transaction}', 'TransactionController@destroy'); // Delete
+});
 
 /**
  * Phase 2: Insight
@@ -63,4 +71,5 @@ Route::get('/me', 'AuthController@me')->middleware('auth:api');
  * 3. User password change notification email
  * 4. Different insight saving plans (different algorithms/methods)
  * 5. Insights can show exceeded amount for each category
+ * 6. User can use custom categories
  */

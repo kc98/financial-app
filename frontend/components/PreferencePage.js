@@ -15,9 +15,16 @@ import {
   Icon,
   Title,
   Button,
+  Switch,
 } from "native-base";
 
-import { StyleSheet, Image, Dimensions, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  Dimensions,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
@@ -31,26 +38,122 @@ export default function PreferencePage() {
   return (
     <Container>
       <Header transparent />
-      <Grid>
+      <Grid style={colors.backgroundGrey}>
         <Row
-          style={[styleSheetMain.tertiaryButton, { height: 50, margin: 20 }]}
+          style={[
+            styleSheetMain.tertiaryButton,
+            {
+              height: 50,
+              marginTop: 20,
+              marginLeft: 20,
+              marginRight: 20,
+              paddingLeft: 15,
+              paddingRight: 12,
+            },
+          ]}
         >
-          <Text style={styleSheetMain.mediumText}>This is preference page</Text>
+          <Col size={6}>
+            <Text style={[styleSheetMain.mediumText]}>Date Format</Text>
+          </Col>
+          <Col size={3} style={[styleSheetMain.rightContainer]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Text style={[colors.primary, texts.font_14]}>1 Jan 2020</Text>
+            </TouchableOpacity>
+          </Col>
+          <Col size={1} style={[styleSheetMain.rightContainer]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Icon
+                style={[colors.primary, texts.font_26]}
+                type="AntDesign"
+                name="right"
+              />
+            </TouchableOpacity>
+          </Col>
         </Row>
         <Row
-          style={[styleSheetMain.tertiaryButton, { height: 50, margin: 20 }]}
+          style={[
+            styleSheetMain.tertiaryButton,
+            {
+              height: 50,
+              marginTop: 20,
+              marginLeft: 20,
+              marginRight: 20,
+              paddingLeft: 15,
+              paddingRight: 12,
+            },
+          ]}
         >
-          <Text style={styleSheetMain.mediumText}>This is preference page</Text>
+          <Col size={6}>
+            <Text style={[styleSheetMain.mediumText]}>Currency Format</Text>
+          </Col>
+          <Col size={3} style={[styleSheetMain.rightContainer]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Text style={[colors.primary, texts.font_14]}>MYR</Text>
+            </TouchableOpacity>
+          </Col>
+          <Col size={1} style={[styleSheetMain.rightContainer]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Icon
+                style={[colors.primary, texts.font_26]}
+                type="AntDesign"
+                name="right"
+              />
+            </TouchableOpacity>
+          </Col>
         </Row>
-        <Row
-          style={[styleSheetMain.tertiaryButton, { height: 50, margin: 20 }]}
+        {/* <Row
+          style={[
+            styleSheetMain.tertiaryButton,
+            {
+              height: 50,
+              marginTop: 20,
+              marginLeft: 20,
+              marginRight: 20,
+              paddingLeft: 15,
+              paddingRight: 12,
+            },
+          ]}
         >
-          <Text style={styleSheetMain.mediumText}>This is preference page</Text>
-        </Row>
+          <Col size={6}>
+            <Text style={[styleSheetMain.mediumText]}>
+              Daily Reminder of adding transaction
+            </Text>
+          </Col>
+          <Col size={3} style={[styleSheetMain.rightContainer]}></Col>
+          <Col size={1} style={[styleSheetMain.rightContainer]}>
+            <Switch value={true} />
+          </Col>
+        </Row> */}
         <Row
-          style={[styleSheetMain.tertiaryButton, { height: 50, margin: 20 }]}
+          style={[
+            styleSheetMain.tertiaryButton,
+            {
+              height: 50,
+              marginTop: 20,
+              marginLeft: 20,
+              marginRight: 20,
+              paddingLeft: 15,
+              paddingRight: 12,
+            },
+          ]}
         >
-          <Text style={styleSheetMain.mediumText}>This is preference page</Text>
+          <Col size={6}>
+            <Text style={[styleSheetMain.mediumText]}>Set Monthly Budget</Text>
+          </Col>
+          <Col size={3} style={[styleSheetMain.rightContainer]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Text style={[colors.primary, texts.font_14]}>800</Text>
+            </TouchableOpacity>
+          </Col>
+          <Col size={1} style={[styleSheetMain.rightContainer]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Icon
+                style={[colors.primary, texts.font_26]}
+                type="AntDesign"
+                name="right"
+              />
+            </TouchableOpacity>
+          </Col>
         </Row>
       </Grid>
     </Container>

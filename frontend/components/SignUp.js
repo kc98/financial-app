@@ -69,8 +69,8 @@ export default function SignUp({ navigation }) {
 
   //handle input value on change
   const handleNameValueOnChange = (event) => {
-    let inputFirstName = event.nativeEvent.text;
-    setFirstName(inputFirstName);
+    let inputName = event.nativeEvent.text;
+    setName(inputName);
   };
 
   const handleEmailValueOnChange = (event) => {
@@ -90,7 +90,7 @@ export default function SignUp({ navigation }) {
 
   //handle input on blur
   const handleNameBlur = () => {
-    setFirstNameTouched(true);
+    setNameTouched(true);
   };
 
   const handleEmailBlur = () => {
@@ -106,17 +106,15 @@ export default function SignUp({ navigation }) {
   };
 
   const handleSignUpOnSubmit = () => {
-    if (!NameTouched || !email || !password || !confirmPassword) {
+    if (!nameTouched || !email || !password || !confirmPassword) {
       setName(null);
       setEmail(null);
       setPassword(null);
       setConfirmPassword(null);
     } else {
-      Alert.alert(
-        "Welcome " + firstName + "!",
-        " You have signed up successfully",
-        [{ text: "OK" }]
-      );
+      Alert.alert("Welcome " + name + "!", " You have signed up successfully", [
+        { text: "OK" },
+      ]);
       return navigation.navigate("MainPage");
     }
   };
@@ -155,7 +153,7 @@ export default function SignUp({ navigation }) {
               <Text
                 style={[
                   styleSheetMain.errorTextLogIn,
-                  { marginTop: !firstName && firstNameTouched ? 10 : 0 },
+                  { marginTop: !name && nameTouched ? 10 : 0 },
                 ]}
               >
                 {!name && nameTouched ? "Name is required" : ""}

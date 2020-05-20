@@ -125,7 +125,7 @@ export default function UserProfilePage({ navigation }) {
             <Button
               style={[
                 styleSheetMain.tertiaryButton,
-                widths.width_40,
+                widths.width_50,
                 { height: 48 },
               ]}
               onPress={handlePreferencesOnPress}
@@ -141,7 +141,7 @@ export default function UserProfilePage({ navigation }) {
               { height: 30, marginTop: 40, marginBottom: 40 },
             ]}
           >
-            <Button style={[styles.primaryButtonRadius18, widths.width_40]}>
+            <Button style={[styles.primaryButtonRadius18, widths.width_50]}>
               <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
                 Logout
               </Text>
