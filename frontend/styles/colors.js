@@ -22,6 +22,9 @@ const colors = StyleSheet.create({
   red: {
     color: "#FF0000",
   },
+  backgroundPrimary: {
+    backgroundColor: "#46C553",
+  },
   backgroundGrey: {
     backgroundColor: "#E3DDDD",
   },

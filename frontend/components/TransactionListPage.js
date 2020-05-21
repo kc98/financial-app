@@ -9,13 +9,7 @@ import {
   Icon,
   Button,
 } from "native-base";
-import {
-  StyleSheet,
-  Image,
-  Dimensions,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
@@ -24,101 +18,147 @@ import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import TransactionContainer from "./TransactionContainer";
+import YearMonthPicker from "./YearMonthPicker";
 
 export default function TransactionList() {
-  const initDate = new Date();
-  const [date, setDate] = useState(
-    new Date(initDate.getFullYear(), initDate.getMonth())
-  );
-  const [temp, setTemp] = useState("Wallet");
-  const month = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  // const initDate = new Date();
+  // const [date, setDate] = useState(
+  //   new Date(initDate.getFullYear(), initDate.getMonth())
+  // );
+  // const [temp, setTemp] = useState("Wallet");
+  // const month = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  //   "August",
+  //   "September",
+  //   "October",
+  //   "November",
+  //   "December",
+  // ];
 
-  function MonthPicker() {
-    const startDate = new Date(date.getFullYear() - 1, date.getMonth() + 1);
-    const endDate = new Date(date.getFullYear() + 1, date.getMonth() + 1);
-    let allowedDates = [];
+  // function MonthPicker() {
+  //   const startDate = new Date(date.getFullYear() - 1, date.getMonth() + 1);
+  //   const endDate = new Date(date.getFullYear() + 1, date.getMonth() + 1);
+  //   let allowedDates = [];
 
-    for (let i = startDate; i <= endDate; i.setMonth(i.getMonth() + 1)) {
-      allowedDates.push(i);
-    }
-    console.log(allowedDates);
+  //   for (let i = startDate; i <= endDate; i.setMonth(i.getMonth() + 1)) {
+  //     allowedDates.push(i);
+  //   }
+  //   console.log(allowedDates);
 
-    return (
-      <Picker
-        note
-        mode="dialog"
-        selectedValue={`${month[date.getMonth()]} ${date.getFullYear()}`}
-        onValueChange={handleMonthPickerOnValueChange}
-      >
-        {allowedDates.map((allowedDate) => (
-          <Picker.Item
-            key={`${
-              month[allowedDate.getMonth()]
-            } ${allowedDate.getFullYear()}`}
-            label={`${
-              month[allowedDate.getMonth()]
-            } ${allowedDate.getFullYear()}`}
-            value={`${
-              month[allowedDate.getMonth()]
-            } ${allowedDate.getFullYear()}`}
-          />
-        ))}
-      </Picker>
-    );
-  }
+  //   return (
+  //     <Picker
+  //       note
+  //       mode="dialog"
+  //       selectedValue={`${month[date.getMonth()]} ${date.getFullYear()}`}
+  //       onValueChange={handleMonthPickerOnValueChange}
+  //     >
+  //       {allowedDates.map((allowedDate) => (
+  //         <Picker.Item
+  //           key={`${
+  //             month[allowedDate.getMonth()]
+  //           } ${allowedDate.getFullYear()}`}
+  //           label={`${
+  //             month[allowedDate.getMonth()]
+  //           } ${allowedDate.getFullYear()}`}
+  //           value={`${
+  //             month[allowedDate.getMonth()]
+  //           } ${allowedDate.getFullYear()}`}
+  //         />
+  //       ))}
+  //     </Picker>
+  //   );
+  // }
 
-  function handleMonthPickerOnValueChange(value) {
-    setDate(new Date(value));
-    console.log(date);
-  }
+  // function handleMonthPickerOnValueChange(value) {
+  //   setDate(new Date(value));
+  //   console.log(date);
+  // }
 
-  console.log(
-    `${date.getDate()} ${month[date.getMonth()]} ${date.getFullYear()}`
-  );
+  // console.log(
+  //   `${date.getDate()} ${month[date.getMonth()]} ${date.getFullYear()}`
+  // );
+
+  const Screen = Dimensions.get("window");
+  var year = new Date().getFullYear();
+  var month = new Date().getMonth() + 1;
+  // let months = [
+  //   "January",
+  //   "February",
+  //   "March",
+  //   "April",
+  //   "May",
+  //   "June",
+  //   "July",
+  //   "August",
+  //   "September",
+  //   "October",
+  //   "November",
+  //   "December",
+  // ];
+
+  const [startYear, setstartYear] = useState();
+  const [endYear, setEndYear] = useState();
+  const [selectedYear, setSelectYear] = useState(year);
+  // const [selectedtMonth, setSelectMonth] = useState(months[month]);
+  const [selectedMonth, setSelectMonth] = useState(month);
+  // console.log(selectedtMonth);
+  const showPicker = () => {
+    picker
+      .show({ startYear, endYear, selectedYear, selectedMonth })
+      .then(({ year, month }) => {
+        selectedYear(year);
+        selectedMonth(month);
+      });
+  };
+
   return (
     <Container>
       <Header transparent />
       <Grid style={colors.backgroundGrey}>
         {/* MonthPicker is popping out red error, so commented for now */}
         {/* <MonthPicker /> */}
-        <Row style={[styleSheetMain.selectMonthYearContainer]}>
-          <Col size={1}></Col>
-          <Col size={1} style={[alignments.center]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Text style={[styleSheetMain.selectedMothYearText]}>
-                May 2020
-              </Text>
-            </TouchableOpacity>
-          </Col>
-          <Col size={1} style={[alignments.centerRight]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Icon
-                style={styleSheetMain.dropdownIcon}
-                type="AntDesign"
-                name="caretdown"
-              />
-            </TouchableOpacity>
-          </Col>
-        </Row>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
             justifyContent: "space-between",
           }}
         >
+          <Row>
+            <View>
+              <TouchableOpacity onPress={showPicker}>
+                <Text>Show Picker</Text>
+              </TouchableOpacity>
+              <Text>
+                {selectedYear}-{selectedMonth}
+              </Text>
+              <YearMonthPicker ref={(picker) => (picker = picker)} />
+            </View>
+          </Row>
+          <Row style={[styleSheetMain.selectMonthYearContainer]}>
+            <Col size={1}></Col>
+            <Col size={1} style={[alignments.center]}>
+              <TouchableOpacity style={{ backgroundColor: null }}>
+                <Text style={[styleSheetMain.selectedMothYearText]}>
+                  May 2020
+                </Text>
+              </TouchableOpacity>
+            </Col>
+            <Col size={1} style={[alignments.centerRight]}>
+              <TouchableOpacity style={{ backgroundColor: null }}>
+                <Icon
+                  style={styleSheetMain.dropdownIcon}
+                  type="AntDesign"
+                  name="caretdown"
+                />
+              </TouchableOpacity>
+            </Col>
+          </Row>
           <View style={{ height: 120 }}>
             <Row
               style={[
