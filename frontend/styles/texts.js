@@ -14,15 +14,19 @@ const texts = StyleSheet.create({
   font_18: {
     fontSize: 18,
   },
-  font_14: {
-    fontSize: 14,
-  },
-  font_15: {
-    fontSize: 15,
+  font_17: {
+    fontSize: 17,
   },
   font_16: {
     fontSize: 16,
   },
+  font_15: {
+    fontSize: 15,
+  },
+  font_14: {
+    fontSize: 14,
+  },
+
   underline: {
     textDecorationLine: "underline",
   },
