@@ -3,25 +3,18 @@ import {
   Text,
   Container,
   Header,
-  Left,
-  Body,
-  Right,
-  Content,
   View,
-  Form,
   Input,
   Label,
-  Item,
-  Icon,
-  Title,
   Button,
   Segment,
 } from "native-base";
 
-import { StyleSheet, Image, Dimensions, TextInput } from "react-native";
+import { StyleSheet, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import DatePicker from "react-native-datepicker";
+import PickerModal from "react-native-picker-modal-view";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -29,10 +22,56 @@ import { colors } from "../styles/colors";
 import { buttons } from "../styles/buttons";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
+import { CategoryPicker } from "./CategoryPicker";
 
 export default function AddTransactionPage() {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
+
+  const currentDate = currentYear + "-" + currentMonth + "-" + currentDay;
   const [transactionMode, setTransactionMode] = useState(true);
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [transactionNote, setTransactionNote] = useState(null);
+
+  const expenseList = [
+    { Id: 1, Name: "Expense #1" },
+    { Id: 2, Name: "Expense #2" },
+    { Id: 3, Name: "Expense #3" },
+    { Id: 4, Name: "Expense #4" },
+    { Id: 5, Name: "testing " },
+    { Id: 6, Name: "food" },
+    { Id: 7, Name: "testing " },
+    { Id: 8, Name: "fossssod" },
+    { Id: 9, Name: "testing123" },
+    { Id: 10, Name: "aaaaaaa" },
+    { Id: 11, Name: "bbbbbbb " },
+    { Id: 12, Name: "vvvvvv" },
+    { Id: 13, Name: "xxxxxxxx" },
+    { Id: 14, Name: "zzzzzzzzzz" },
+    { Id: 15, Name: "bbnnnn" },
+    { Id: 16, Name: "qqqqqqq" },
+  ];
+
+  const incomeList = [
+    { Id: 1, Name: "Income #1", Value: "Income #1 Value" },
+    { Id: 2, Name: "Income #2", Value: "Income #2 Value" },
+    { Id: 3, Name: "Income #3", Value: "Income #3 Value" },
+    { Id: 4, Name: "Income #4 ", Value: "Income #4 Value" },
+    { Id: 5, Name: "interest testing ", Value: "interest testing Value" },
+    { Id: 6, Name: "Deposit", Value: "Deposit Value" },
+    { Id: 7, Name: "testing111 ", Value: "testing111 Value" },
+    { Id: 8, Name: "food", Value: "food Value" },
+    { Id: 9, Name: "testing321 ", Value: "testing321 Value" },
+    { Id: 10, Name: "mmmmmmmmm", Value: "mmmmmmmmm Value" },
+    { Id: 11, Name: "bbbbbbb ", Value: "bbbbbbb Value" },
+    { Id: 12, Name: "vvvvvv", Value: "vvvvvv Value" },
+    { Id: 13, Name: "xxxxxxxx ", Value: "xxxxxxxx Value" },
+    { Id: 14, Name: "zzzzzzzzzz", Value: "zzzzzzzzzz Value" },
+    { Id: 15, Name: "bbnnnn ", Value: "bbnnnn Value" },
+    { Id: 16, Name: "qqqqqqq", Value: "qqqqqqq Value" },
+  ];
 
   function switchTransactionMode() {
     setTransactionMode(!transactionMode);
@@ -46,6 +85,43 @@ export default function AddTransactionPage() {
     let inputAmount = event.nativeEvent.text;
     // inputAmount = parseFloat(inputAmount);
     setAmount(inputAmount);
+  };
+
+  const handleCategoryOnSelect = (event) => {
+    let inputCategory = event.Name;
+    setSelectedCategory(inputCategory);
+  };
+
+  const handleTransactionNoteOnChange = (event) => {
+    let inputTransactionNote = event.nativeEvent.text;
+    setTransactionNote(inputTransactionNote);
+  };
+
+  const handleAddTransactionOnSubmit = () => {
+    if (!selectedDate || !amount || !selectedCategory) {
+      // setSelectedDate(null);
+      // setAmount(defaultAmount);
+      // setSelectedCategory(null);
+      // setTransactionNote(null);
+    } else {
+      Alert.alert(
+        "New Transaction is Added",
+        "Date: " +
+          selectedDate +
+          " Amount: " +
+          amount +
+          " Category: " +
+          selectedCategory +
+          " Note: " +
+          transactionNote,
+        [{ text: "OK" }]
+      );
+
+      setSelectedDate(null);
+      setAmount(defaultAmount);
+      //setSelectedCategory(null);
+      setTransactionNote(null);
+    }
   };
 
   return (
@@ -121,7 +197,7 @@ export default function AddTransactionPage() {
               <Col size={2}>
                 <DatePicker
                   style={{ width: 200 }}
-                  date={currentDate}
+                  date={selectedDate}
                   mode="date"
                   placeholder="select date"
                   format="YYYY-MM-DD"
@@ -137,7 +213,7 @@ export default function AddTransactionPage() {
                     dateInput: { marginLeft: 36 },
                   }}
                   onDateChange={(date) => {
-                    setCurrentDate(date);
+                    setSelectedDate(date);
                   }}
                 />
               </Col>
@@ -175,7 +251,21 @@ export default function AddTransactionPage() {
                   Category:
                 </Label>
               </Col>
-              <Col size={4}></Col>
+              <Col size={4}>
+                <PickerModal
+                  onSelected={handleCategoryOnSelect}
+                  items={transactionMode ? expenseList : incomeList}
+                  sortingLanguage={"tr"}
+                  showToTopButton={true}
+                  selected={selectedCategory}
+                  showAlphabeticalIndex={true}
+                  autoGenerateAlphabeticalIndex={true}
+                  selectPlaceholderText={"Select Category..."}
+                  searchPlaceholderText={"Search..."}
+                  requireSelection={false}
+                  autoSort={false}
+                />
+              </Col>
             </Row>
             <Row style={[styles.transactionInputRow, { height: 45 }]}>
               <Col size={2}>
@@ -203,8 +293,8 @@ export default function AddTransactionPage() {
                   },
                 ]}
                 multiline={true}
-                // onChange={handleAmountOnChange}
-                // value={amount}
+                onChange={handleTransactionNoteOnChange}
+                value={transactionNote}
               />
             </Row>
             <Row
@@ -222,17 +312,12 @@ export default function AddTransactionPage() {
                   buttons.radius_18,
                   { marginTop: 30 },
                 ]}
+                onPress={handleAddTransactionOnSubmit}
               >
                 <Text style={[colors.white, texts.montserratRegular]}>
                   Add Transaction
                 </Text>
               </Button>
-            </Row>
-            <Row>
-              <Text>
-                This is add transaction {transactionMode ? "expense" : "income"}{" "}
-                page
-              </Text>
             </Row>
           </KeyboardAwareScrollView>
         </View>
