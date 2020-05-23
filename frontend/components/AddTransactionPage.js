@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Col, Row, Grid } from "react-native-easy-grid";
 import DatePicker from "react-native-datepicker";
 import PickerModal from "react-native-picker-modal-view";
+import moment from "moment";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -22,18 +23,15 @@ import { colors } from "../styles/colors";
 import { buttons } from "../styles/buttons";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
-import { CategoryPicker } from "./CategoryPicker";
 
 export default function AddTransactionPage() {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-  const currentDay = new Date().getDate();
+  const currentDateTime = new Date();
 
-  const currentDate = currentYear + "-" + currentMonth + "-" + currentDay;
   const [transactionMode, setTransactionMode] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const [selectedDateTime, setSelectedDateTime] = useState(currentDateTime);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [transactionNote, setTransactionNote] = useState(null);
+  const [amount, setAmount] = useState(null);
 
   const expenseList = [
     { Id: 1, Name: "Expense #1" },
@@ -77,13 +75,13 @@ export default function AddTransactionPage() {
     setTransactionMode(!transactionMode);
   }
 
-  var defaultAmount = 0;
-  defaultAmount = parseFloat(defaultAmount).toFixed(2);
-  const [amount, setAmount] = useState(defaultAmount);
+  const handleOnDateChange = (datetime) => {
+    let timestamp = new Date().getTime();
+    setSelectedDateTime(datetime);
+  };
 
   const handleAmountOnChange = (event) => {
     let inputAmount = event.nativeEvent.text;
-    // inputAmount = parseFloat(inputAmount);
     setAmount(inputAmount);
   };
 
@@ -98,27 +96,34 @@ export default function AddTransactionPage() {
   };
 
   const handleAddTransactionOnSubmit = () => {
-    if (!selectedDate || !amount || !selectedCategory) {
+    if (!selectedDateTime || !amount || !selectedCategory) {
       // setSelectedDate(null);
       // setAmount(defaultAmount);
       // setSelectedCategory(null);
       // setTransactionNote(null);
     } else {
+      let dateTimeToTimestamp = moment(
+        selectedDateTime,
+        "DD/MM/YYYY, h:mm a"
+      ).format("x");
+      let timestampToDateTime = moment(dateTimeToTimestamp, "x").format(
+        "DD/MM/YYYY, h:mm a"
+      );
+      let amoutWithTwoDecimal = parseFloat(amount).toFixed(2);
       Alert.alert(
         "New Transaction is Added",
-        "Date: " +
-          selectedDate +
+        "Date and Time: " +
+          timestampToDateTime +
           " Amount: " +
-          amount +
+          amoutWithTwoDecimal +
           " Category: " +
           selectedCategory +
           " Note: " +
           transactionNote,
         [{ text: "OK" }]
       );
-
-      setSelectedDate(null);
-      setAmount(defaultAmount);
+      setSelectedDateTime(null);
+      setAmount(null);
       //setSelectedCategory(null);
       setTransactionNote(null);
     }
@@ -196,11 +201,11 @@ export default function AddTransactionPage() {
               </Col>
               <Col size={2}>
                 <DatePicker
-                  style={{ width: 200 }}
-                  date={selectedDate}
-                  mode="date"
-                  placeholder="select date"
-                  format="YYYY-MM-DD"
+                  style={{ width: 225 }}
+                  date={selectedDateTime}
+                  mode="datetime"
+                  placeholder="select date and time"
+                  format="DD/MM/YYYY, h:mm a"
                   confirmBtnText="Confirm"
                   cancelBtnText="Cancel"
                   customStyles={{
@@ -212,9 +217,10 @@ export default function AddTransactionPage() {
                     },
                     dateInput: { marginLeft: 36 },
                   }}
-                  onDateChange={(date) => {
-                    setSelectedDate(date);
-                  }}
+                  // onDateChange={(date) => {
+                  //   setSelectedDate(date);
+                  // }}
+                  onDateChange={handleOnDateChange}
                 />
               </Col>
             </Row>
@@ -231,6 +237,7 @@ export default function AddTransactionPage() {
               </Col>
               <Col size={3} style={{ height: 30 }}>
                 <Input
+                  placeholder="0.00"
                   returnKeyType="done"
                   style={[
                     styleSheetMain.labelBlack,
@@ -308,7 +315,6 @@ export default function AddTransactionPage() {
               <Button
                 style={[
                   styleSheetMain.primaryButton,
-
                   buttons.radius_18,
                   { marginTop: 30 },
                 ]}
