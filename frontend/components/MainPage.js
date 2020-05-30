@@ -1,6 +1,6 @@
 import React from "react";
 import TransactionListPage from "./TransactionListPage";
-import Reports from "./Reports";
+import ReportPage from "./ReportPage";
 import { Icon } from "native-base";
 
 import { colors } from "../styles/colors";
@@ -66,8 +66,8 @@ export default function MainPage({ navigation, route }) {
             />
           ),
         }}
-        name="Reports"
-        component={Reports}
+        name="ReportPage"
+        component={ReportPage}
       />
       <Tab.Screen
         options={{

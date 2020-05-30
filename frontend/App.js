@@ -15,6 +15,7 @@ import MainPage from "./components/MainPage";
 import GoToButton from "./components/GoToButton";
 import { colors } from "./styles/colors";
 import PreferencePage from "./components/PreferencePage";
+import TransactionDetailPage from "./components/TransactionDetailPage";
 
 const Stack = createStackNavigator();
 
@@ -165,6 +166,16 @@ export default class App extends React.Component {
             }}
             name="PreferencePage"
             component={PreferencePage}
+          />
+          <Stack.Screen
+            options={{
+              headerTitle: "Transaction",
+              headerBackImage: () => <GoToButton type="goBack" />,
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+            }}
+            name="TransactionDetailPage"
+            component={TransactionDetailPage}
           />
         </Stack.Navigator>
       </NavigationContainer>

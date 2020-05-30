@@ -18,15 +18,12 @@ import {
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
-import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import TransactionReportList from "./TransactionReportList";
-import YearMonthPicker from "./YearMonthPicker";
 
 export default function TransactionDataRow(props) {
   const navigation = useNavigation();

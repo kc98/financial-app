@@ -35,7 +35,7 @@ import TransactionReportList from "./TransactionReportList";
 import TransactionDataRow from "./TransactionDataRow";
 
 //{ navigation }
-export default function Reports() {
+export default function ReportPage() {
   const expenseData = [
     { key: 1, name: "Food", totalAmount: 300, percentage: "46%" },
     { key: 2, name: "Movie", totalAmount: 200, percentage: "31%" },

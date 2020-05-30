@@ -24,15 +24,36 @@ import { buttons } from "../styles/buttons";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
 
-export default function AddTransactionPage() {
+export default function TransactionDetailPage() {
   const currentDateTime = new Date();
 
-  const [transactionMode, setTransactionMode] = useState(true);
-  const [selectedDateTime, setSelectedDateTime] = useState(currentDateTime);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [transactionNote, setTransactionNote] = useState(null);
-  const [amount, setAmount] = useState(null);
+  const transactionData = {
+    key: 1,
+    note: "Movie",
+    amount: 20,
+    timestamp: "1590858208778",
+    category: "Income #2",
+    transactionType: "income",
+  };
+  const defaultCategory = { Id: 2, Name: "Income #2" };
+  let dateTime = moment(transactionData.timestamp, "x").format(
+    "DD/MM/YYYY, h:mm a"
+  );
 
+  let selectedTransactionMode = true;
+  if (transactionData.transactionType != "expense") {
+    selectedTransactionMode = false;
+  }
+
+  const [transactionMode, setTransactionMode] = useState(
+    selectedTransactionMode
+  );
+  const [selectedDateTime, setSelectedDateTime] = useState(dateTime);
+  const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
+  const [transactionNote, setTransactionNote] = useState(transactionData.note);
+  const [amount, setAmount] = useState(
+    parseFloat(transactionData.amount).toFixed(2)
+  );
   const expenseList = [
     { Id: 1, Name: "Expense #1" },
     { Id: 2, Name: "Expense #2" },
@@ -53,22 +74,22 @@ export default function AddTransactionPage() {
   ];
 
   const incomeList = [
-    { Id: 1, Name: "Income #1", Value: "Income #1 Value" },
-    { Id: 2, Name: "Income #2", Value: "Income #2 Value" },
-    { Id: 3, Name: "Income #3", Value: "Income #3 Value" },
-    { Id: 4, Name: "Income #4 ", Value: "Income #4 Value" },
-    { Id: 5, Name: "interest testing ", Value: "interest testing Value" },
-    { Id: 6, Name: "Deposit", Value: "Deposit Value" },
-    { Id: 7, Name: "testing111 ", Value: "testing111 Value" },
-    { Id: 8, Name: "food", Value: "food Value" },
-    { Id: 9, Name: "testing321 ", Value: "testing321 Value" },
-    { Id: 10, Name: "mmmmmmmmm", Value: "mmmmmmmmm Value" },
-    { Id: 11, Name: "bbbbbbb ", Value: "bbbbbbb Value" },
-    { Id: 12, Name: "vvvvvv", Value: "vvvvvv Value" },
-    { Id: 13, Name: "xxxxxxxx ", Value: "xxxxxxxx Value" },
-    { Id: 14, Name: "zzzzzzzzzz", Value: "zzzzzzzzzz Value" },
-    { Id: 15, Name: "bbnnnn ", Value: "bbnnnn Value" },
-    { Id: 16, Name: "qqqqqqq", Value: "qqqqqqq Value" },
+    { Id: 1, Name: "Income #1" },
+    { Id: 2, Name: "Income #2" },
+    { Id: 3, Name: "Income #3" },
+    { Id: 4, Name: "Income #4" },
+    { Id: 5, Name: "interest testing" },
+    { Id: 6, Name: "Deposit" },
+    { Id: 7, Name: "testing111" },
+    { Id: 8, Name: "cccccccccc" },
+    { Id: 9, Name: "testing321 " },
+    { Id: 10, Name: "mmmmmmmmm" },
+    { Id: 11, Name: "bbbbbbb " },
+    { Id: 12, Name: "vvvvvv" },
+    { Id: 13, Name: "xxxxxxxx " },
+    { Id: 14, Name: "zzzzzzzzzz" },
+    { Id: 15, Name: "bbnnnn" },
+    { Id: 16, Name: "qqqqqqq" },
   ];
 
   function switchTransactionMode() {
@@ -111,7 +132,7 @@ export default function AddTransactionPage() {
       );
       let amoutWithTwoDecimal = parseFloat(amount).toFixed(2);
       Alert.alert(
-        "New Transaction is Added",
+        "Transaction is Updated",
         "Date and Time: " +
           timestampToDateTime +
           " Amount: " +
@@ -122,10 +143,12 @@ export default function AddTransactionPage() {
           transactionNote,
         [{ text: "OK" }]
       );
-      setSelectedDateTime(null);
-      setAmount(null);
-      //setSelectedCategory(null);
-      setTransactionNote(null);
+      setSelectedDateTime(timestampToDateTime);
+      setAmount(amoutWithTwoDecimal);
+
+      //setCategory not sure yet, need to be confirmed once iterate with database
+      setSelectedCategory(selectedCategory);
+      setTransactionNote(transactionNote);
     }
   };
 
@@ -321,7 +344,7 @@ export default function AddTransactionPage() {
                 onPress={handleAddTransactionOnSubmit}
               >
                 <Text style={[colors.white, texts.montserratRegular]}>
-                  Add Transaction
+                  Update
                 </Text>
               </Button>
             </Row>
