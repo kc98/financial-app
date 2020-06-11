@@ -35,6 +35,10 @@ export default function UserProfilePage({ navigation }) {
     return navigation.navigate("PreferencePage");
   };
 
+  const handleProfileChangeOnPress = () => {
+    return navigation.navigate("EditUserProfilePage");
+  };
+
   return (
     <Container>
       <Header transparent />
@@ -114,7 +118,10 @@ export default function UserProfilePage({ navigation }) {
                 { height: 30, marginTop: 45, marginBottom: 10 },
               ]}
             >
-              <Button style={[styles.primaryButtonRadius25, widths.width_50]}>
+              <Button
+                style={[styles.primaryButtonRadius25, widths.width_50]}
+                onPress={handleProfileChangeOnPress}
+              >
                 <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
                   Change
                 </Text>

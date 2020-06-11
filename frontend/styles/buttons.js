@@ -12,6 +12,9 @@ const buttons = StyleSheet.create({
   hover: {
     backgroundColor: "#8ede96",
   },
+  radius_16: {
+    borderRadius: 16,
+  },
   radius_18: {
     borderRadius: 18,
   },

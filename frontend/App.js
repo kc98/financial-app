@@ -17,6 +17,7 @@ import { colors } from "./styles/colors";
 import PreferencePage from "./components/PreferencePage";
 import TransactionDetailPage from "./components/TransactionDetailPage";
 import InsightsDetailPage from "./components/InsightsDetailPage";
+import EditUserProfilePage from "./components/EditUserProfilePage";
 
 const Stack = createStackNavigator();
 
@@ -187,6 +188,16 @@ export default class App extends React.Component {
             }}
             name="InsightsDetailPage"
             component={InsightsDetailPage}
+          />
+          <Stack.Screen
+            options={{
+              headerTitle: "Profile",
+              headerBackImage: () => <GoToButton type="goBack" />,
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+            }}
+            name="EditUserProfilePage"
+            component={EditUserProfilePage}
           />
         </Stack.Navigator>
       </NavigationContainer>
