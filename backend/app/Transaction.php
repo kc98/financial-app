@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Category;
+
 class Transaction extends Model
 {
     /**
@@ -13,6 +15,15 @@ class Transaction extends Model
      */
     protected $fillable = [
         'description', 'amount', 'timestamp'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'user_id', 'updated_at', 'category_id', 'created_at'
     ];
 
     /**
@@ -54,6 +65,10 @@ class Transaction extends Model
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = [
+        'category', 'timestamp'
+    ];
     
 
     // Relationships
@@ -70,5 +85,22 @@ class Transaction extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    // Accessor/Mutators
+    /**
+     * Can change how the data show up in the output
+     *
+     * Function name format getNAMEAttribute
+     * e.g. getColumnNameAttribute, getTimeAttribute
+     */
+    public function getCategoryAttribute()
+    {
+        return Category::find($this->category_id)->category;
+    }
+
+    public function getTimestampAttribute()
+    {
+        return $this->created_at;
     }
 }

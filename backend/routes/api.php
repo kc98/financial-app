@@ -27,17 +27,21 @@ use Illuminate\Support\Facades\Route;
  * Phase 1: Basic budget app
  * 1. [X] User can login
  * 2. [X] New user can sign up
- * 3. [ ] User can check transaction list
+ * 3. [X] User can check transaction list
  * 4. [ ] User can check old transaction list
  * 5. [ ] User can manage (create, read, update, delete) their own transaction
- * 6. [ ] User can logout
- * 7. [ ] User can edit their profile (name, email and password)
+ * 6. [X] User can logout
+ * 7. [X] User can edit their profile (name, email and password)
  */
 Route::post('/login', 'AuthController@login');
 Route::post('/signup', 'AuthController@signup');
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/me', 'AuthController@me');
+    Route::post('/logout', 'AuthController@logout');
+
+    Route::put('/profile', 'UserController@update');
+
     Route::get('/transactions', 'TransactionController@index'); // Browse
     // Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read
     // Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit

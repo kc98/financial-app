@@ -15,10 +15,10 @@ class UserSeeder extends Seeder
     public function run()
     {
         $user = new User();
-        $user->name = 'admin';
-        $user->email = 'admin@localhost.dev';
+        $user->name = 'user';
+        $user->email = 'user@localhost.dev';
         $user->email_verified_at = now();
-        $user->password = bcrypt('admin');
+        $user->password = bcrypt('123456');
         $user->remember_token = 'HhmX9hw0hPOp';
         $user->save();
 

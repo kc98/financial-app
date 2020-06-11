@@ -14,7 +14,10 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->userOrFail();
+        $transactions = $user->transactions()->get();
+
+        return response()->json($transactions);
     }
 
     /**
