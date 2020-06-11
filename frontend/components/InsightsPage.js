@@ -31,7 +31,7 @@ import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import InsightsDateRow from "./InsightsDateRow";
 
-export default function InsightsPage() {
+export default function InsightsPage({ navigation }) {
   // const insightData = [
   //   { key: 1, time: "Morning", name: "Food", amount: 5 },
   //   { key: 2, time: "Morning", name: "Movie", amount: 20 },
@@ -56,7 +56,9 @@ export default function InsightsPage() {
     { key: 1, name: "Food", amount: 10 },
     { key: 2, name: "Printing", amount: 5 },
   ];
-
+  const handleInsightsDetailOnPress = () => {
+    return navigation.navigate("InsightsDetailPage");
+  };
   return (
     <Container>
       <Header transparent />
@@ -84,7 +86,7 @@ export default function InsightsPage() {
             </Col>
             <Col size={1} style={styleSheetMain.rightContainer}>
               <Text style={[texts.montserratRegular, texts.font_16]}>
-                RM 875.80
+                MYR 875.80
               </Text>
             </Col>
           </Row>
@@ -105,7 +107,7 @@ export default function InsightsPage() {
             </Col>
             <Col size={1} style={styleSheetMain.rightContainer}>
               <Text style={[texts.montserratRegular, texts.font_16]}>
-                RM 800.00
+                MYR 800.00
               </Text>
             </Col>
           </Row>
@@ -142,6 +144,7 @@ export default function InsightsPage() {
                     widths.width_40,
                     { height: 35, borderRadius: 12 },
                   ]}
+                  onPress={handleInsightsDetailOnPress}
                 >
                   <Text
                     style={[

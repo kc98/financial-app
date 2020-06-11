@@ -51,7 +51,7 @@ export default function InsightsTimeRow(props) {
               texts.underline,
             ]}
           >
-            {props.time} (RM {parseFloat(totalAmount).toFixed(2)})
+            {props.time} (MYR {parseFloat(totalAmount).toFixed(2)})
           </Text>
         </Row>
         {dataRow}

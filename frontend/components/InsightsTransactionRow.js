@@ -29,7 +29,7 @@ export default function InsightsTransactionRow(props) {
     <View>
       <Row style={{ height: 25 }}>
         <Text style={[texts.montserratRegular, texts.font_14, colors.black]}>
-          {props.name} - RM {props.amount}
+          {props.name} - MYR {props.amount}
         </Text>
       </Row>
     </View>

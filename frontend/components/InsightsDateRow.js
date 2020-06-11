@@ -51,7 +51,7 @@ export default function InsightsDateRow(props) {
     <View>
       <Row style={{ height: 30, marginBottom: 5, marginTop: 10 }}>
         <Text style={[texts.montserratBold, texts.font_15, colors.tertiary]}>
-          {props.date} ({props.week}): RM {parseFloat(totalAmount).toFixed(2)}
+          {props.date} ({props.week}): MYR {parseFloat(totalAmount).toFixed(2)}
         </Text>
       </Row>
       <InsightsTimeRow time={"Morning"} data={props.morningInsightData} />

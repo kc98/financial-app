@@ -21,204 +21,76 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import moment from "moment";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
+import { widths } from "../styles/widths";
+import { buttons } from "../styles/buttons";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
+import InsightsDateRow from "./InsightsDateRow";
 
 export default function InsightsDetailPage() {
+  const morningInsight = [
+    { key: 1, name: "Food", amount: 5.8 },
+    { key: 2, name: "Movie", amount: 21 },
+  ];
+
+  const afternoonInsight = [
+    { key: 1, name: "Food", amount: 10.5 },
+    { key: 2, name: "Parking", amount: 10 },
+    { key: 3, name: "Shopping", amount: 50 },
+  ];
+
+  const nightInsight = [
+    { key: 1, name: "Food", amount: 10 },
+    { key: 2, name: "Printing", amount: 5 },
+  ];
+
+  let currentDateMonthYear = moment().format("DD MMM YYYY");
+  let nextWeek = moment().add(6, "day").format("DD MMM YYYY");
+  let dummyDataDays = [0, 1, 2, 3, 4, 5, 6];
+
   return (
     <Container>
       <Header transparent />
       <Grid style={[colors.backgroundGrey]}>
-        <Row
-          style={[
-            {
-              height: 30,
-              marginLeft: 20,
-              marginRight: 20,
-              marginTop: 35,
-            },
-          ]}
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "space-between",
+          }}
         >
-          <Col size={2}>
-            <Text style={[texts.montserratBold, texts.font_16]}>
-              Average Monthly Spending:
-            </Text>
-          </Col>
-          <Col size={1} style={styleSheetMain.rightContainer}>
-            <Text style={[texts.montserratRegular, texts.font_16]}>
-              RM 875.80
-            </Text>
-          </Col>
-        </Row>
-        <Row
-          style={[
-            {
-              height: 30,
-              marginLeft: 20,
-              marginRight: 20,
-              marginTop: 20,
-            },
-          ]}
-        >
-          <Col size={2}>
-            <Text style={[texts.montserratBold, texts.font_16]}>
-              Your Budget Amount:
-            </Text>
-          </Col>
-          <Col size={1} style={styleSheetMain.rightContainer}>
-            <Text style={[texts.montserratRegular, texts.font_16]}>
-              RM 800.00
-            </Text>
-          </Col>
-        </Row>
-        <Row
-          style={[
-            {
-              height: 35,
-              marginLeft: 20,
-              marginRight: 20,
-              marginTop: 30,
-            },
-          ]}
-        >
-          <Text style={[texts.montserratBold, texts.font_15]}>Saving Plan</Text>
-        </Row>
-        <Col
-          style={[
-            colors.backgroundWhite,
-            { paddingTop: 15, paddingLeft: 20, paddingRight: 20 },
-          ]}
-        >
-          <Row style={{ height: 30 }}>
-            <Text
-              style={[texts.montserratBold, texts.font_15, colors.tertiary]}
-            >
-              Today - 9 June 2020 (Monday): RM 50
+          <Row
+            style={[
+              {
+                height: 35,
+                marginLeft: 20,
+                marginRight: 20,
+                marginTop: 30,
+              },
+            ]}
+          >
+            <Text style={[texts.montserratBold, texts.font_15]}>
+              Saving Plan ({currentDateMonthYear} - {nextWeek})
             </Text>
           </Row>
-          <Col size={1}>
-            <Row style={{ height: 28 }}>
-              <Text
-                style={[
-                  texts.montserratBold,
-                  texts.font_14,
-                  colors.black,
-                  texts.underline,
-                ]}
-              >
-                Morning
-              </Text>
-              <Text
-                style={[
-                  texts.montserratRegular,
-                  texts.font_14,
-                  colors.black,
-                  texts.underline,
-                ]}
-              >
-                (RM 7)
-              </Text>
-            </Row>
-            <Row style={{ height: 25 }}>
-              <Text
-                style={[texts.montserratRegular, texts.font_14, colors.black]}
-              >
-                Food - RM 5
-              </Text>
-            </Row>
-            <Row style={{ height: 25 }}>
-              <Text
-                style={[texts.montserratRegular, texts.font_14, colors.black]}
-              >
-                Petrol - RM 30
-              </Text>
-            </Row>
+          <Col
+            style={[colors.backgroundWhite, { padding: 20, marginBottom: 20 }]}
+          >
+            {dummyDataDays.map((day, index) => (
+              <InsightsDateRow
+                key={index}
+                date={moment().add(day, "day").format("DD MMM YYYY")}
+                week={moment().add(day, "day").format("dddd")}
+                morningInsightData={morningInsight}
+                afternoonInsightData={afternoonInsight}
+                nightInsightData={nightInsight}
+              />
+            ))}
           </Col>
-          <Col size={1}>
-            <Row style={{ height: 28 }}>
-              <Text
-                style={[
-                  texts.montserratBold,
-                  texts.font_14,
-                  colors.black,
-                  texts.underline,
-                ]}
-              >
-                Afternoon
-              </Text>
-              <Text
-                style={[
-                  texts.montserratRegular,
-                  texts.font_14,
-                  colors.black,
-                  texts.underline,
-                ]}
-              >
-                (RM 7)
-              </Text>
-            </Row>
-            <Row style={{ height: 25 }}>
-              <Text
-                style={[texts.montserratRegular, texts.font_14, colors.black]}
-              >
-                Food - RM 5
-              </Text>
-            </Row>
-            <Row style={{ height: 25 }}>
-              <Text
-                style={[texts.montserratRegular, texts.font_14, colors.black]}
-              >
-                Petrol - RM 30
-              </Text>
-            </Row>
-          </Col>
-          <Col size={1}>
-            <Row style={{ height: 28 }}>
-              <Text
-                style={[
-                  texts.montserratBold,
-                  texts.font_15,
-                  colors.black,
-                  texts.underline,
-                ]}
-              >
-                Dinner
-              </Text>
-              <Text
-                style={[
-                  texts.montserratRegular,
-                  texts.font_15,
-                  colors.black,
-                  texts.underline,
-                ]}
-              >
-                (RM 7)
-              </Text>
-            </Row>
-            <Row style={{ height: 25 }}>
-              <Text
-                style={[texts.montserratRegular, texts.font_15, colors.black]}
-              >
-                Food - RM 5
-              </Text>
-            </Row>
-            <Row style={{ height: 25 }}>
-              <Text
-                style={[texts.montserratRegular, texts.font_15, colors.black]}
-              >
-                Petrol - RM 30
-              </Text>
-            </Row>
-          </Col>
-          <Col>
-            <Row>
-              <Text>asd</Text>
-            </Row>
-          </Col>
-        </Col>
+        </ScrollView>
       </Grid>
     </Container>
   );
