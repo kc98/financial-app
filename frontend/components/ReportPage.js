@@ -41,7 +41,7 @@ export default function ReportPage() {
     { key: 2, name: "Movie", totalAmount: 200, percentage: "31%" },
     { key: 3, name: "Parking", totalAmount: 150, percentage: "23%" },
     { key: 4, name: "Printing", totalAmount: 50, percentage: "13%" },
-    { key: 5, name: "Printing", totalAmount: 50, percentage: "13%" },
+    { key: 5, name: "Shopping", totalAmount: 50, percentage: "13%" },
     { key: 6, name: "Printing", totalAmount: 130, percentage: "2%" },
   ];
 

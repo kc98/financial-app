@@ -21,39 +21,142 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import moment from "moment";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
+import { widths } from "../styles/widths";
+import { buttons } from "../styles/buttons";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
+import InsightsDateRow from "./InsightsDateRow";
 
 export default function InsightsPage() {
+  // const insightData = [
+  //   { key: 1, time: "Morning", name: "Food", amount: 5 },
+  //   { key: 2, time: "Morning", name: "Movie", amount: 20 },
+  //   { key: 3, time: "Afternoon", name: "Food", amount: 10 },
+  //   { key: 4, time: "Afternoon", name: "Parking", amount: 10 },
+  //   { key: 5, time: "Afternoon", name: "Shopping", amount: 50 },
+  //   { key: 6, time: "Night", name: "Food", amount: 10 },
+  //   { key: 7, time: "Night", name: "Printing", amount: 5 },
+  // ];
+  const morningInsight = [
+    { key: 1, name: "Food", amount: 5.8 },
+    { key: 2, name: "Movie", amount: 21 },
+  ];
+
+  const afternoonInsight = [
+    { key: 1, name: "Food", amount: 10.5 },
+    { key: 2, name: "Parking", amount: 10 },
+    { key: 3, name: "Shopping", amount: 50 },
+  ];
+
+  const nightInsight = [
+    { key: 1, name: "Food", amount: 10 },
+    { key: 2, name: "Printing", amount: 5 },
+  ];
+
   return (
     <Container>
       <Header transparent />
       <Grid style={[colors.backgroundGrey]}>
-        <Row
-          style={[
-            {
-              height: 35,
-              marginLeft: 20,
-              marginRight: 20,
-              marginTop: 35,
-            },
-          ]}
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "space-between",
+          }}
         >
-          <Text style={[texts.montserratBold]}>Saving Plan</Text>
-        </Row>
-        <Row
-          style={[
-            colors.backgroundWhite,
-            { paddingTop: 15, paddingLeft: 20, paddingRight: 20 },
-          ]}
-        >
-          <Text style={[texts.montserratBold, texts.font_15, colors.tertiary]}>
-            Day 1: RM 50
-          </Text>
-        </Row>
+          <Row
+            style={[
+              {
+                height: 30,
+                marginLeft: 20,
+                marginRight: 20,
+                marginTop: 40,
+              },
+            ]}
+          >
+            <Col size={2}>
+              <Text style={[texts.montserratBold, texts.font_16]}>
+                Average Monthly Spending:
+              </Text>
+            </Col>
+            <Col size={1} style={styleSheetMain.rightContainer}>
+              <Text style={[texts.montserratRegular, texts.font_16]}>
+                RM 875.80
+              </Text>
+            </Col>
+          </Row>
+          <Row
+            style={[
+              {
+                height: 30,
+                marginLeft: 20,
+                marginRight: 20,
+                marginTop: 20,
+              },
+            ]}
+          >
+            <Col size={2}>
+              <Text style={[texts.montserratBold, texts.font_16]}>
+                Your Budget Amount:
+              </Text>
+            </Col>
+            <Col size={1} style={styleSheetMain.rightContainer}>
+              <Text style={[texts.montserratRegular, texts.font_16]}>
+                RM 800.00
+              </Text>
+            </Col>
+          </Row>
+          <Row
+            style={[
+              {
+                height: 35,
+                marginLeft: 20,
+                marginRight: 20,
+                marginTop: 30,
+              },
+            ]}
+          >
+            <Text style={[texts.montserratBold, texts.font_15]}>
+              Saving Plan
+            </Text>
+          </Row>
+          <Col
+            style={[colors.backgroundWhite, { padding: 20, marginBottom: 20 }]}
+          >
+            <InsightsDateRow
+              date={moment().format("DD MMM YYYY")}
+              week={moment().format("dddd")}
+              morningInsightData={morningInsight}
+              afternoonInsightData={afternoonInsight}
+              nightInsightData={nightInsight}
+            />
+            <Col size={1}>
+              <Row>
+                <Button
+                  style={[
+                    buttons.primary,
+                    alignments.center,
+                    widths.width_40,
+                    { height: 35, borderRadius: 12 },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      texts.montserratRegular,
+                      texts.font_14,
+                      colors.white,
+                    ]}
+                  >
+                    View Details
+                  </Text>
+                </Button>
+              </Row>
+            </Col>
+          </Col>
+        </ScrollView>
       </Grid>
     </Container>
   );

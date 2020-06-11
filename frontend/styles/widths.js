@@ -4,6 +4,9 @@ const widths = StyleSheet.create({
   width_40: {
     width: "40%",
   },
+  width_45: {
+    width: "45%",
+  },
   width_50: {
     width: "50%",
   },
