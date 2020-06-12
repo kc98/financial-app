@@ -120,6 +120,7 @@ export default function SignUp({ navigation }) {
   };
 
   const verifyNonEmptyField = name && email && password && confirmPassword;
+  const matchingPassword = password === confirmPassword;
 
   return (
     <Container>
@@ -235,12 +236,12 @@ export default function SignUp({ navigation }) {
             <TouchableOpacity
               style={[
                 { padding: 10, marginTop: 50, marginBottom: 50 },
-                verifyNonEmptyField
+                verifyNonEmptyField && matchingPassword
                   ? styleSheetMain.primaryButton
                   : styleSheetMain.hoverButton,
               ]}
               onPress={handleSignUpOnSubmit}
-              disabled={verifyNonEmptyField ? false : true}
+              disabled={verifyNonEmptyField && matchingPassword ? false : true}
             >
               <Text style={[styleSheetMain.primaryButtonText]}>Sign Up</Text>
             </TouchableOpacity>

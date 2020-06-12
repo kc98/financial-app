@@ -18,6 +18,7 @@ import PreferencePage from "./components/PreferencePage";
 import TransactionDetailPage from "./components/TransactionDetailPage";
 import InsightsDetailPage from "./components/InsightsDetailPage";
 import EditUserProfilePage from "./components/EditUserProfilePage";
+import ChangePasswordPage from "./components/ChangePasswordPage";
 
 const Stack = createStackNavigator();
 
@@ -123,7 +124,7 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         {/* REMEMBER REMOVE initialRouteName="MainPage" */}
-        <Stack.Navigator initialRouteName="MainPage">
+        <Stack.Navigator>
           <Stack.Screen
             options={{
               header: () => null,
@@ -198,6 +199,16 @@ export default class App extends React.Component {
             }}
             name="EditUserProfilePage"
             component={EditUserProfilePage}
+          />
+          <Stack.Screen
+            options={{
+              headerTitle: "Change Password",
+              headerBackImage: () => <GoToButton type="goBack" />,
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+            }}
+            name="ChangePasswordPage"
+            component={ChangePasswordPage}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -70,162 +70,171 @@ export default function EditUserProfilePage({ navigation }) {
     );
   };
 
+  const handleChangePasswordOnSubmit = () => {
+    return navigation.navigate("ChangePasswordPage");
+  };
+
   return (
     <Container>
       <Header transparent />
       <Grid style={colors.backgroundGrey}>
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "space-between",
-          }}
-        >
-          <Row
-            size={1}
-            style={[alignments.center, { height: 100, marginTop: 30 }]}
-          >
-            <View
-              style={{
-                width: 120,
-                height: 120,
-                // borderWidth: 1,
-                borderRadius: 70,
-                overflow: "hidden",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#fff",
-                padding: 15,
-              }}
-            >
-              <Image
-                style={{
-                  width: "100%",
-                  height: "100%",
-                }}
-                source={require("../img/user.png")}
-              />
-            </View>
-          </Row>
-          <Row
-            size={1}
-            style={[alignments.center, { height: 20, marginTop: 20 }]}
-          >
-            <Text
-              style={[
-                texts.montserratBold,
-                alignments.center,
-                { fontSize: 16 },
-              ]}
-            >
-              YEAP KHOR CHIN
-            </Text>
-          </Row>
-          <View
-            style={{
-              backgroundColor: "#fff",
-              marginTop: 20,
-              marginLeft: 25,
-              marginRight: 25,
-              marginBottom: 60,
-              borderRadius: 20,
-              padding: 25,
+        <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "space-between",
             }}
           >
             <Row
-              size={3}
+              size={1}
+              style={[alignments.center, { height: 100, marginTop: 30 }]}
+            >
+              <View
+                style={{
+                  width: 120,
+                  height: 120,
+                  // borderWidth: 1,
+                  borderRadius: 70,
+                  overflow: "hidden",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#fff",
+                  padding: 15,
+                }}
+              >
+                <Image
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  source={require("../img/user.png")}
+                />
+              </View>
+            </Row>
+            <Row
+              size={1}
+              style={[alignments.center, { height: 20, marginTop: 20 }]}
+            >
+              <Text
+                style={[
+                  texts.montserratBold,
+                  alignments.center,
+                  { fontSize: 16 },
+                ]}
+              >
+                YEAP KHOR CHIN
+              </Text>
+            </Row>
+            <View
               style={{
-                marginTop: 8,
-                alignItems: "center",
-                height: 30,
+                backgroundColor: "#fff",
+                marginTop: 20,
+                marginLeft: 25,
+                marginRight: 25,
+                marginBottom: 60,
+                borderRadius: 20,
+                padding: 25,
               }}
             >
-              <Col size={2}>
-                <Text style={texts.montserratBold}>Name:</Text>
-              </Col>
-              <Col size={4}>
-                <Input
-                  style={[
-                    styleSheetMain.labelBlack,
-                    texts.font_15,
-                    {
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#4EAE58",
-                    },
-                  ]}
-                  onChange={handleNameOnChange}
-                  value={name}
-                />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: 30, alignItems: "center", height: 30 }}>
-              <Col size={2}>
-                <Text style={texts.montserratBold}>Email:</Text>
-              </Col>
-              <Col size={4}>
-                <Input
-                  style={[
-                    styleSheetMain.labelBlack,
-                    texts.font_15,
-                    {
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#4EAE58",
-                    },
-                  ]}
-                  onChange={handleEmailOnChange}
-                  value={email}
-                />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: 35, alignItems: "center" }}>
-              <Col size={2}>
-                <Text style={texts.montserratBold}>Password:</Text>
-              </Col>
-              <Col size={4}>
-                <Button style={[styles.primaryButtonRadius18]}>
-                  <Text
+              <Row
+                size={3}
+                style={{
+                  marginTop: 8,
+                  alignItems: "center",
+                  height: 30,
+                }}
+              >
+                <Col size={2}>
+                  <Text style={texts.montserratBold}>Name:</Text>
+                </Col>
+                <Col size={4}>
+                  <Input
                     style={[
-                      texts.montserratRegular,
-                      texts.font_14,
-                      colors.black,
+                      styleSheetMain.labelBlack,
+                      texts.font_15,
+                      {
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#4EAE58",
+                      },
                     ]}
+                    onChange={handleNameOnChange}
+                    value={name}
+                  />
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 30, alignItems: "center", height: 30 }}>
+                <Col size={2}>
+                  <Text style={texts.montserratBold}>Email:</Text>
+                </Col>
+                <Col size={4}>
+                  <Input
+                    style={[
+                      styleSheetMain.labelBlack,
+                      texts.font_15,
+                      {
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#4EAE58",
+                      },
+                    ]}
+                    onChange={handleEmailOnChange}
+                    value={email}
+                  />
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 35, alignItems: "center" }}>
+                <Col size={2}>
+                  <Text style={texts.montserratBold}>Password:</Text>
+                </Col>
+                <Col size={4}>
+                  <Button
+                    style={[styles.primaryButtonRadius18]}
+                    onPress={handleChangePasswordOnSubmit}
                   >
-                    Change Password
+                    <Text
+                      style={[
+                        texts.montserratRegular,
+                        texts.font_14,
+                        colors.black,
+                      ]}
+                    >
+                      Change Password
+                    </Text>
+                  </Button>
+                </Col>
+              </Row>
+              <Row
+                style={[
+                  alignments.center,
+                  { height: 30, marginTop: 55, marginBottom: 10 },
+                ]}
+              >
+                <Button
+                  style={[styles.primaryButtonRadius25, widths.width_50]}
+                  onPress={handleUpdateProfileOnSubmit}
+                >
+                  <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
+                    Update
                   </Text>
                 </Button>
-              </Col>
-            </Row>
-            <Row
-              style={[
-                alignments.center,
-                { height: 30, marginTop: 55, marginBottom: 10 },
-              ]}
-            >
-              <Button
-                style={[styles.primaryButtonRadius25, widths.width_50]}
-                onPress={handleUpdateProfileOnSubmit}
+              </Row>
+              <Row
+                style={[
+                  alignments.center,
+                  { height: 30, marginTop: 25, marginBottom: 10 },
+                ]}
               >
-                <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
-                  Update
-                </Text>
-              </Button>
-            </Row>
-            <Row
-              style={[
-                alignments.center,
-                { height: 30, marginTop: 25, marginBottom: 10 },
-              ]}
-            >
-              <Button
-                style={[styles.secondaryButtonRadius25, widths.width_50]}
-                onPress={handleCancelUpdateProfileOnSubmit}
-              >
-                <Text style={[styleSheetMain.buttonTextMedium, colors.black]}>
-                  Cancel
-                </Text>
-              </Button>
-            </Row>
-          </View>
-        </ScrollView>
+                <Button
+                  style={[styles.secondaryButtonRadius25, widths.width_50]}
+                  onPress={handleCancelUpdateProfileOnSubmit}
+                >
+                  <Text style={[styleSheetMain.buttonTextMedium, colors.black]}>
+                    Cancel
+                  </Text>
+                </Button>
+              </Row>
+            </View>
+          </ScrollView>
+        </KeyboardAwareScrollView>
       </Grid>
     </Container>
   );

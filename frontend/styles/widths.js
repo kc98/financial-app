@@ -13,6 +13,9 @@ const widths = StyleSheet.create({
   width_60: {
     width: "60%",
   },
+  width_70: {
+    width: "70%",
+  },
   width_80: {
     width: "80%",
   },
