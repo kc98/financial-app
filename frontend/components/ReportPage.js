@@ -138,8 +138,16 @@ export default function ReportPage() {
               </Col>
             </Row>
           </View>
-          <TransactionDataRow title="Expense" transactionData={expenseData} />
-          <TransactionDataRow title="Income" transactionData={incomeData} />
+          <TransactionDataRow
+            title="Expense"
+            transactionData={expenseData}
+            navigateTo={"ReportDetailPage"}
+          />
+          <TransactionDataRow
+            title="Income"
+            transactionData={incomeData}
+            navigateTo={"ReportDetailPage"}
+          />
         </ScrollView>
       </Grid>
     </Container>

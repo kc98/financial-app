@@ -32,10 +32,10 @@ export default function TransactionDetailPage() {
     note: "Movie",
     amount: 20,
     timestamp: "1590858208778",
-    category: "Income #2",
+    category: "Income #3",
     transactionType: "income",
   };
-  const defaultCategory = { Id: 2, Name: "Income #2" };
+  const defaultCategory = { Name: transactionData.category };
   let dateTime = moment(transactionData.timestamp, "x").format(
     "DD/MM/YYYY, h:mm a"
   );
@@ -74,22 +74,22 @@ export default function TransactionDetailPage() {
   ];
 
   const incomeList = [
-    { Id: 1, Name: "Income #1" },
-    { Id: 2, Name: "Income #2" },
-    { Id: 3, Name: "Income #3" },
-    { Id: 4, Name: "Income #4" },
-    { Id: 5, Name: "interest testing" },
-    { Id: 6, Name: "Deposit" },
-    { Id: 7, Name: "testing111" },
-    { Id: 8, Name: "cccccccccc" },
-    { Id: 9, Name: "testing321 " },
-    { Id: 10, Name: "mmmmmmmmm" },
-    { Id: 11, Name: "bbbbbbb " },
-    { Id: 12, Name: "vvvvvv" },
-    { Id: 13, Name: "xxxxxxxx " },
-    { Id: 14, Name: "zzzzzzzzzz" },
-    { Id: 15, Name: "bbnnnn" },
-    { Id: 16, Name: "qqqqqqq" },
+    { Id: 17, Name: "Income #1" },
+    { Id: 18, Name: "Income #2" },
+    { Id: 19, Name: "Income #3" },
+    { Id: 20, Name: "Income #4" },
+    { Id: 21, Name: "interest testing" },
+    { Id: 22, Name: "Deposit" },
+    { Id: 23, Name: "testing111" },
+    { Id: 24, Name: "cccccccccc" },
+    { Id: 25, Name: "testing321 " },
+    { Id: 26, Name: "mmmmmmmmm" },
+    { Id: 27, Name: "bbbbbbb " },
+    { Id: 28, Name: "vvvvvv" },
+    { Id: 29, Name: "xxxxxxxx " },
+    { Id: 30, Name: "zzzzzzzzzz" },
+    { Id: 31, Name: "bbnnnn" },
+    { Id: 32, Name: "qqqqqqq" },
   ];
 
   function switchTransactionMode() {

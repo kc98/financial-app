@@ -19,6 +19,8 @@ import TransactionDetailPage from "./components/TransactionDetailPage";
 import InsightsDetailPage from "./components/InsightsDetailPage";
 import EditUserProfilePage from "./components/EditUserProfilePage";
 import ChangePasswordPage from "./components/ChangePasswordPage";
+import ReportDetailPage from "./components/ReportDetailPage";
+import BudgetPage from "./components/BudgetPage";
 
 const Stack = createStackNavigator();
 
@@ -124,7 +126,7 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         {/* REMEMBER REMOVE initialRouteName="MainPage" */}
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="MainPage">
           <Stack.Screen
             options={{
               header: () => null,
@@ -209,6 +211,26 @@ export default class App extends React.Component {
             }}
             name="ChangePasswordPage"
             component={ChangePasswordPage}
+          />
+          <Stack.Screen
+            options={{
+              headerTitle: "Report Details",
+              headerBackImage: () => <GoToButton type="goBack" />,
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+            }}
+            name="ReportDetailPage"
+            component={ReportDetailPage}
+          />
+          <Stack.Screen
+            options={{
+              headerTitle: "Budget",
+              headerBackImage: () => <GoToButton type="goBack" />,
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+            }}
+            name="BudgetPage"
+            component={BudgetPage}
           />
         </Stack.Navigator>
       </NavigationContainer>

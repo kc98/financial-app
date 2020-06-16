@@ -45,6 +45,7 @@ export default function TransactionDataRow(props) {
         amount={amountWithTwoDecimal}
         percentage={row.percentage}
         colorCode={ColorCode}
+        navigateTo={props.navigateTo}
       />
     );
   });

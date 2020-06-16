@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
  * 1. [X] User can login
  * 2. [X] New user can sign up
  * 3. [X] User can check transaction list
- * 4. [ ] User can check old transaction list
+ * 4. [X] User can check old transaction list
  * 5. [ ] User can manage (create, read, update, delete) their own transaction
  * 6. [X] User can logout
  * 7. [X] User can edit their profile (name, email and password)
@@ -43,10 +43,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/profile', 'UserController@update');
 
     Route::get('/transactions', 'TransactionController@index'); // Browse
-    // Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read
-    // Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit
-    // Route::post('/transactions', 'TransactionController@store'); // Add
-    // Route::delete('/transactions/{transaction}', 'TransactionController@destroy'); // Delete
+    Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read
+    Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit
+    Route::post('/transactions', 'TransactionController@store'); // Add
+    Route::delete('/transactions/{transaction}', 'TransactionController@destroy'); // Delete
 });
 
 /**

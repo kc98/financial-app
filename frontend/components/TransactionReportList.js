@@ -26,56 +26,65 @@ import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import YearMonthPicker from "./YearMonthPicker";
+import PreferencePage from "./PreferencePage";
+import ReportDetailPage from "./ReportDetailPage";
 
 export default function TransactionReportList(props) {
   const navigation = useNavigation();
   return (
-    <Row
-      style={[
-        colors.backgroundWhite,
-        {
-          width: "100%",
-          height: 40,
-          alignItems: "center",
-          borderWidth: 1,
-          marginTop: 10,
-        },
-      ]}
+    <TouchableOpacity
+      style={{ backgroundColor: null }}
+      onPress={() => {
+        return navigation.navigate(props.navigateTo);
+      }}
     >
-      <Col size={3} style={{ paddingLeft: 10 }}>
-        <Text
-          style={[
-            texts.montserratRegular,
-            texts.font_15,
-            { alignItems: "center" },
-          ]}
-        >
-          {props.name}
-        </Text>
-      </Col>
-      <Col size={2}>
-        <Text
-          style={[alignments.center, texts.montserratRegular, texts.font_15]}
-        >
-          MYR {props.amount}
-        </Text>
-      </Col>
-      <Col
-        size={1}
+      <Row
         style={[
-          alignments.center,
+          colors.backgroundWhite,
           {
-            height: "100%",
-            backgroundColor: props.colorCode,
-            borderLeftWidth: 1,
+            width: "100%",
+            height: 40,
+            alignItems: "center",
+            borderWidth: 1,
+            marginTop: 10,
           },
         ]}
       >
-        <Text style={[texts.montserratRegular, texts.font_15]}>
-          {props.percentage}
-        </Text>
-      </Col>
-    </Row>
+        <Col size={3} style={{ paddingLeft: 10 }}>
+          <Text
+            style={[
+              texts.montserratRegular,
+              texts.font_15,
+              { alignItems: "center" },
+            ]}
+          >
+            {props.name}
+          </Text>
+        </Col>
+        <Col size={2}>
+          <Text
+            style={[alignments.center, texts.montserratRegular, texts.font_15]}
+          >
+            MYR {props.amount}
+          </Text>
+        </Col>
+        <Col
+          size={1}
+          style={[
+            alignments.center,
+            {
+              height: "100%",
+              backgroundColor: props.colorCode,
+              borderLeftWidth: 1,
+            },
+          ]}
+        >
+          <Text style={[texts.montserratRegular, texts.font_15]}>
+            {props.percentage}
+          </Text>
+        </Col>
+      </Row>
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({});

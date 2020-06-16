@@ -66,7 +66,7 @@ export default function MainPage({ navigation, route }) {
             />
           ),
         }}
-        name="ReportPage"
+        name="Report"
         component={ReportPage}
       />
       <Tab.Screen
