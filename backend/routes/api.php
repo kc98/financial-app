@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
  * 2. [X] New user can sign up
  * 3. [X] User can check transaction list
  * 4. [X] User can check old transaction list
- * 5. [ ] User can manage (create, read, update, delete) their own transaction
+ * 5. [X] User can manage (create, read, update, delete) their own transaction
  * 6. [X] User can logout
  * 7. [X] User can edit their profile (name, email and password)
  */
@@ -43,7 +43,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/profile', 'UserController@update');
 
     Route::get('/transactions', 'TransactionController@index'); // Browse
-    Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read
+    Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read http://localhost:8000/api/transaction/123
     Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit
     Route::post('/transactions', 'TransactionController@store'); // Add
     Route::delete('/transactions/{transaction}', 'TransactionController@destroy'); // Delete
@@ -51,8 +51,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 /**
  * Phase 2: Insight
- * 1. User can generate their monthly insight
- * 2. User can set their own insight monthly budget (and regenerate the insight)
+ * 1. [ ] User can generate their monthly insight
+ * 2. [ ] User can set their own insight monthly budget (and regenerate the insight)
  */
 
 /**

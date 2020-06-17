@@ -34,7 +34,7 @@ import { colors } from "../styles/colors";
 import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
-export default function PreferencePage() {
+export default function PreferencePage({ navigation }) {
   return (
     <Container>
       <Header transparent />
@@ -124,7 +124,10 @@ export default function PreferencePage() {
             <Switch value={true} />
           </Col>
         </Row> */}
-        <TouchableOpacity style={{ backgroundColor: null }}>
+        <TouchableOpacity
+          style={{ backgroundColor: null }}
+          onPress={() => navigation.navigate("BudgetSettingPage")}
+        >
           <Row
             style={[
               styleSheetMain.tertiaryButton,

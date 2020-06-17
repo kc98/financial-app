@@ -20,7 +20,7 @@ import InsightsDetailPage from "./components/InsightsDetailPage";
 import EditUserProfilePage from "./components/EditUserProfilePage";
 import ChangePasswordPage from "./components/ChangePasswordPage";
 import ReportDetailPage from "./components/ReportDetailPage";
-import BudgetPage from "./components/BudgetPage";
+import BudgetSettingPage from "./components/BudgetSettingPage";
 
 const Stack = createStackNavigator();
 
@@ -229,8 +229,8 @@ export default class App extends React.Component {
               headerBackTitleVisible: false,
               headerTransparent: true,
             }}
-            name="BudgetPage"
-            component={BudgetPage}
+            name="BudgetSettingPage"
+            component={BudgetSettingPage}
           />
         </Stack.Navigator>
       </NavigationContainer>

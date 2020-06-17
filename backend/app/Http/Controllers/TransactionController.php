@@ -69,34 +69,83 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Transaction  $transaction
+     * @param  int  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaction $transaction)
+    public function show(int $transaction)
     {
-        //
+        $user = auth()->userOrFail();
+
+        if (!$result = $user->transactions()->find($transaction)) {
+            return response()->json([
+                'error' => 'Transaction not found.'
+            ], 404);
+        }
+
+        return response()->json($result);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Transaction  $transaction
+     * @param  int  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, int $transaction)
     {
-        //
+        $validator = Validator::make(request(['description', 'amount', 'category', 'date']), [
+            'description' => 'required|max:300',
+            'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'category' => 'required',
+            'date' => 'required',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = auth()->userOrFail();
+
+        if (!$transaction = $user->transactions()->find($transaction)) {
+            return response()->json([
+                'error' => 'Transaction not found.'
+            ], 404);
+        }
+        
+        $transaction->description = $request->description;
+        $transaction->amount = $request->amount;
+        $transaction->created_at = $request->date;
+        $transaction->updated_at = now();
+        $transaction->category()->associate(Category::find($request->category));
+
+        $transaction->save();
+        
+        return response()->json([
+            'message' => 'Transaction updated.',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Transaction  $transaction
+     * @param  int $transaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(int $transaction)
     {
-        //
+        $user = auth()->userOrFail();
+
+        if (!$user->transactions()->find($transaction)) {
+            return response()->json([
+                'error' => 'Transaction not found.'
+            ], 404);
+        }
+
+        Transaction::find($transaction)->first()->delete();
+
+        return response()->json([
+            'message' => 'Transaction is deleted',
+        ]);
     }
 }

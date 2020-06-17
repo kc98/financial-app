@@ -43,6 +43,7 @@ export default function MainPage({ navigation, route }) {
 
   return (
     <Tab.Navigator
+      initialRouteName="Transaction"
       tabBarOptions={{
         activeTintColor: colors.primary.color,
       }}

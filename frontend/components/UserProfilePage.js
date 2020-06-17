@@ -17,7 +17,7 @@ import {
   Button,
 } from "native-base";
 
-import { StyleSheet, Image, Dimensions, TextInput } from "react-native";
+import { StyleSheet, Image, Dimensions, TextInput, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { ScrollView } from "react-native-gesture-handler";
@@ -37,6 +37,20 @@ export default function UserProfilePage({ navigation }) {
 
   const handleProfileChangeOnPress = () => {
     return navigation.navigate("EditUserProfilePage");
+  };
+
+  const handleLogoutOnPress = () => {
+    Alert.alert(
+      "Logout Confirmation",
+      "Are you sure to logout the application?",
+      [
+        { text: "No" },
+        {
+          text: "Yes",
+          onPress: () => navigation.navigate("EntrancePage"),
+        },
+      ]
+    );
   };
 
   return (
@@ -148,7 +162,10 @@ export default function UserProfilePage({ navigation }) {
               { height: 30, marginTop: 40, marginBottom: 40 },
             ]}
           >
-            <Button style={[styles.primaryButtonRadius18, widths.width_50]}>
+            <Button
+              style={[styles.primaryButtonRadius18, widths.width_50]}
+              onPress={handleLogoutOnPress}
+            >
               <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
                 Logout
               </Text>

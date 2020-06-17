@@ -34,7 +34,7 @@ import { colors } from "../styles/colors";
 import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
-export default function BudgetPage() {
+export default function BudgetSettingPage() {
   return (
     <Container>
       <Header transparent />
