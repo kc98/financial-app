@@ -5,7 +5,6 @@ import { Icon } from "native-base";
 
 import { colors } from "../styles/colors";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { CommonActions } from "@react-navigation/native";
 import AddTransactionPage from "./AddTransactionPage";
 import InsightsPage from "./InsightsPage";
 import UserProfilePage from "./UserProfilePage";

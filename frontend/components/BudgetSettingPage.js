@@ -41,122 +41,38 @@ export default function BudgetSettingPage() {
       <Grid style={colors.backgroundGrey}>
         <Row
           style={[
-            styleSheetMain.tertiaryButton,
+            colors.backgroundWhite,
             {
-              height: 50,
-              marginTop: 20,
-              marginLeft: 20,
-              marginRight: 20,
-              paddingLeft: 15,
-              paddingRight: 12,
+              height: 60,
+              marginTop: 30,
+              paddingTop: 10,
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingBottom: 10,
+              alignItems: "center",
             },
           ]}
         >
           <Col size={6}>
-            <Text style={[styleSheetMain.mediumText]}>Date Format</Text>
+            <Text style={[styleSheetMain.mediumText]}>Budget Amount</Text>
           </Col>
           <Col size={3} style={[styleSheetMain.rightContainer]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Text style={[colors.primary, texts.font_14]}>1 Jan 2020</Text>
-            </TouchableOpacity>
-          </Col>
-          <Col size={1} style={[styleSheetMain.rightContainer]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Icon
-                style={[colors.primary, texts.font_26]}
-                type="AntDesign"
-                name="right"
-              />
-            </TouchableOpacity>
-          </Col>
-        </Row>
-        <Row
-          style={[
-            styleSheetMain.tertiaryButton,
-            {
-              height: 50,
-              marginTop: 20,
-              marginLeft: 20,
-              marginRight: 20,
-              paddingLeft: 15,
-              paddingRight: 12,
-            },
-          ]}
-        >
-          <Col size={6}>
-            <Text style={[styleSheetMain.mediumText]}>Currency Format</Text>
-          </Col>
-          <Col size={3} style={[styleSheetMain.rightContainer]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Text style={[colors.primary, texts.font_14]}>MYR</Text>
-            </TouchableOpacity>
-          </Col>
-          <Col size={1} style={[styleSheetMain.rightContainer]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Icon
-                style={[colors.primary, texts.font_26]}
-                type="AntDesign"
-                name="right"
-              />
-            </TouchableOpacity>
+            <Input
+              style={[
+                styleSheetMain.labelBlack,
+
+                texts.font_14,
+                {
+                  color: "#4EAE58",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#4EAE58",
+                },
+              ]}
+              // onChange={handleTransactionNoteOnChange}
+              value={"800"}
+            />
           </Col>
         </Row>
-        {/* <Row
-          style={[
-            styleSheetMain.tertiaryButton,
-            {
-              height: 50,
-              marginTop: 20,
-              marginLeft: 20,
-              marginRight: 20,
-              paddingLeft: 15,
-              paddingRight: 12,
-            },
-          ]}
-        >
-          <Col size={6}>
-            <Text style={[styleSheetMain.mediumText]}>
-              Daily Reminder of adding transaction
-            </Text>
-          </Col>
-          <Col size={3} style={[styleSheetMain.rightContainer]}></Col>
-          <Col size={1} style={[styleSheetMain.rightContainer]}>
-            <Switch value={true} />
-          </Col>
-        </Row> */}
-        <TouchableOpacity style={{ backgroundColor: null }}>
-          <Row
-            style={[
-              styleSheetMain.tertiaryButton,
-              {
-                height: 50,
-                marginTop: 20,
-                marginLeft: 20,
-                marginRight: 20,
-                paddingLeft: 15,
-                paddingRight: 12,
-              },
-            ]}
-          >
-            <Col size={6}>
-              <Text style={[styleSheetMain.mediumText]}>
-                Set Monthly Budget
-              </Text>
-            </Col>
-            <Col size={3} style={[styleSheetMain.rightContainer]}>
-              <TouchableOpacity style={{ backgroundColor: null }}>
-                <Text style={[colors.primary, texts.font_14]}>800</Text>
-              </TouchableOpacity>
-            </Col>
-            <Col size={1} style={[styleSheetMain.rightContainer]}>
-              <Icon
-                style={[colors.primary, texts.font_26]}
-                type="AntDesign"
-                name="right"
-              />
-            </Col>
-          </Row>
-        </TouchableOpacity>
       </Grid>
     </Container>
   );

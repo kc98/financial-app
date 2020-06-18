@@ -21,6 +21,7 @@ import { StyleSheet, Image, Dimensions, TextInput, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { ScrollView } from "react-native-gesture-handler";
+import { CommonActions } from "@react-navigation/native";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -39,6 +40,17 @@ export default function UserProfilePage({ navigation }) {
     return navigation.navigate("EditUserProfilePage");
   };
 
+  const handleLogoutAlertYesOnPress = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Transactions" }],
+      })
+    );
+
+    return navigation.navigate("EntrancePage");
+  };
+
   const handleLogoutOnPress = () => {
     Alert.alert(
       "Logout Confirmation",
@@ -47,7 +59,7 @@ export default function UserProfilePage({ navigation }) {
         { text: "No" },
         {
           text: "Yes",
-          onPress: () => navigation.navigate("EntrancePage"),
+          onPress: handleLogoutAlertYesOnPress,
         },
       ]
     );

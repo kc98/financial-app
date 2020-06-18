@@ -24,9 +24,12 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { ScrollView } from "react-native-gesture-handler";
+import { CommonActions } from "@react-navigation/native";
 
 import { texts } from "../styles/texts";
 import { styleSheetMain } from "../styles/styleSheetMain";
+
+import * as api from "../api";
 
 export default function LogIn({ navigation }) {
   const [email, setEmail] = useState(null);
@@ -36,6 +39,8 @@ export default function LogIn({ navigation }) {
 
   const [securePasswordTextEntry, setSecurePasswordTextEntry] = useState(true);
   const [passwordShowIcon, setPasswordShowIcon] = useState("eye-off");
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleShowPasswordIconOnPress = () => {
     if (passwordShowIcon == "eye") setPasswordShowIcon("eye-off");
@@ -63,12 +68,20 @@ export default function LogIn({ navigation }) {
     setEmailTouched(true);
   };
 
-  const handleLogInOnSubmit = () => {
+  const handleLogInOnSubmit = async () => {
     if (!email || !password) {
       setEmail(null);
       setPassword(null);
     } else {
-      return navigation.navigate("MainPage");
+      try {
+        let response = await api.login(email, password);
+
+        return navigation.navigate("MainPage");
+      } catch (error) {
+        setErrorMessage(error.response.data.error);
+
+        return;
+      }
     }
   };
 
@@ -154,6 +167,7 @@ export default function LogIn({ navigation }) {
             >
               <Text style={[styleSheetMain.primaryButtonText]}>Log In</Text>
             </TouchableOpacity>
+            {errorMessage ? <Text>{errorMessage}</Text> : null}
           </View>
         </ScrollView>
       </KeyboardAwareScrollView>

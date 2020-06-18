@@ -126,7 +126,7 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         {/* REMEMBER REMOVE initialRouteName="MainPage" */}
-        <Stack.Navigator initialRouteName="MainPage">
+        <Stack.Navigator>
           <Stack.Screen
             options={{
               header: () => null,
