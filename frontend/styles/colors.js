@@ -31,6 +31,9 @@ const colors = StyleSheet.create({
   backgroundWhite: {
     backgroundColor: "#fff",
   },
+  backgroundRed: {
+    backgroundColor: "#FF0000",
+  },
 });
 
 export { colors };

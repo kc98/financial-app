@@ -35,11 +35,16 @@ import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
 export default function PreferencePage({ navigation }) {
+  const [dailyReminder, setDailyReminder] = useState(true);
+
+  const handleDailyReminderOnChange = () => {
+    setDailyReminder(!dailyReminder);
+  };
   return (
     <Container>
       <Header transparent />
       <Grid style={colors.backgroundGrey}>
-        <Row
+        {/* <Row
           style={[
             styleSheetMain.tertiaryButton,
             {
@@ -69,8 +74,8 @@ export default function PreferencePage({ navigation }) {
               />
             </TouchableOpacity>
           </Col>
-        </Row>
-        <Row
+        </Row> */}
+        {/* <Row
           style={[
             styleSheetMain.tertiaryButton,
             {
@@ -100,8 +105,8 @@ export default function PreferencePage({ navigation }) {
               />
             </TouchableOpacity>
           </Col>
-        </Row>
-        {/* <Row
+        </Row> */}
+        <Row
           style={[
             styleSheetMain.tertiaryButton,
             {
@@ -121,45 +126,48 @@ export default function PreferencePage({ navigation }) {
           </Col>
           <Col size={3} style={[styleSheetMain.rightContainer]}></Col>
           <Col size={1} style={[styleSheetMain.rightContainer]}>
-            <Switch value={true} />
+            <Switch
+              value={dailyReminder}
+              onValueChange={handleDailyReminderOnChange}
+            />
           </Col>
-        </Row> */}
-        <TouchableOpacity
-          style={{ backgroundColor: null }}
-          onPress={() => navigation.navigate("BudgetSettingPage")}
-        >
-          <Row
-            style={[
-              styleSheetMain.tertiaryButton,
-              {
-                height: 50,
-                marginTop: 20,
-                marginLeft: 20,
-                marginRight: 20,
-                paddingLeft: 15,
-                paddingRight: 12,
-              },
-            ]}
+        </Row>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={{ backgroundColor: null, width: "100%" }}
+            onPress={() => navigation.navigate("BudgetSettingPage")}
           >
-            <Col size={6}>
-              <Text style={[styleSheetMain.mediumText]}>
-                Set Monthly Budget
-              </Text>
-            </Col>
-            <Col size={3} style={[styleSheetMain.rightContainer]}>
-              <TouchableOpacity style={{ backgroundColor: null }}>
+            <Row
+              style={[
+                styleSheetMain.tertiaryButton,
+                {
+                  height: 50,
+                  marginTop: 20,
+                  marginLeft: 20,
+                  marginRight: 20,
+                  paddingLeft: 15,
+                  paddingRight: 12,
+                },
+              ]}
+            >
+              <Col size={6}>
+                <Text style={[styleSheetMain.mediumText]}>
+                  Set Monthly Budget
+                </Text>
+              </Col>
+              <Col size={3} style={[styleSheetMain.rightContainer]}>
                 <Text style={[colors.primary, texts.font_14]}>800</Text>
-              </TouchableOpacity>
-            </Col>
-            <Col size={1} style={[styleSheetMain.rightContainer]}>
-              <Icon
-                style={[colors.primary, texts.font_26]}
-                type="AntDesign"
-                name="right"
-              />
-            </Col>
-          </Row>
-        </TouchableOpacity>
+              </Col>
+              <Col size={1} style={[styleSheetMain.rightContainer]}>
+                <Icon
+                  style={[colors.primary, texts.font_26]}
+                  type="AntDesign"
+                  name="right"
+                />
+              </Col>
+            </Row>
+          </TouchableOpacity>
+        </View>
       </Grid>
     </Container>
   );

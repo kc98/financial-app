@@ -27,6 +27,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { CommonActions } from "@react-navigation/native";
 
 import { texts } from "../styles/texts";
+import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
 import * as api from "../api";
@@ -85,6 +86,36 @@ export default function LogIn({ navigation }) {
     }
   };
 
+  let errorMessageText = null;
+  if (errorMessage) {
+    errorMessageText = (
+      <View
+        style={[
+          colors.backgroundRed,
+          {
+            flexDirection: "row",
+            alignItems: "center",
+            paddingLeft: 5,
+            paddingTop: 7,
+            paddingBottom: 7,
+            paddingRight: 5,
+            marginBottom: 5,
+            borderRadius: 10,
+          },
+        ]}
+      >
+        <Icon
+          style={[colors.white, { paddingLeft: 5, paddingRight: 10 }]}
+          type="AntDesign"
+          name="closecircleo"
+        />
+        <Text style={[colors.white, texts.montserratRegular]}>
+          {errorMessage}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <Container>
       <Header transparent />
@@ -112,6 +143,7 @@ export default function LogIn({ navigation }) {
               marginRight: "12%",
             }}
           >
+            {errorMessageText}
             <Form>
               <Item floatingLabel>
                 <Label style={styleSheetMain.labelBlack}>Email</Label>
@@ -167,7 +199,7 @@ export default function LogIn({ navigation }) {
             >
               <Text style={[styleSheetMain.primaryButtonText]}>Log In</Text>
             </TouchableOpacity>
-            {errorMessage ? <Text>{errorMessage}</Text> : null}
+            {/* {errorMessage ? <Text>{errorMessage}</Text> : null} */}
           </View>
         </ScrollView>
       </KeyboardAwareScrollView>

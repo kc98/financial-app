@@ -100,6 +100,72 @@ export default function TransactionList() {
   //   "November",
   //   "December",
   // ];
+  const transactionData = [
+    {
+      key: 1,
+      note: "Apples, carrots, and tomatoes",
+      amount: 12.1,
+      transactionType: "expense",
+      category: "Food",
+      date: "11 May 2020",
+    },
+    {
+      key: 2,
+      note: "Mr. Bean",
+      amount: 30,
+      transactionType: "expense",
+      category: "Movie",
+      date: "11 May 2020",
+    },
+    {
+      key: 3,
+      note: "Income #1",
+      amount: 150,
+      transactionType: "income",
+      category: "income#1",
+      date: "10 May 2020",
+    },
+    {
+      key: 4,
+      note: "Printing",
+      amount: 30,
+      transactionType: "expense",
+      category: "Print",
+      date: "10 May 2020",
+    },
+    {
+      key: 5,
+      note: "Shopping",
+      amount: 50,
+      transactionType: "income",
+      category: "Food",
+      date: "9 May 2020",
+    },
+    {
+      key: 6,
+      note: "Printing",
+      amount: 130,
+      transactionType: "expense",
+      category: "Food",
+      date: "9 May 2020",
+    },
+    {
+      key: 7,
+      note: "Printing",
+      amount: 130,
+      transactionType: "expense",
+      category: "Food",
+      date: "9 May 2020",
+    },
+    {
+      key: 8,
+      note: "Printing",
+      amount: 130,
+      transactionType: "expense",
+      category: "Food",
+      date: "8 May 2020",
+    },
+  ];
 
   const [startYear, setstartYear] = useState();
   const [endYear, setEndYear] = useState();
