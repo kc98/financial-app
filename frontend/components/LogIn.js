@@ -25,6 +25,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { ScrollView } from "react-native-gesture-handler";
 import { CommonActions } from "@react-navigation/native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
@@ -76,6 +77,7 @@ export default function LogIn({ navigation }) {
     } else {
       try {
         let response = await api.login(email, password);
+        await AsyncStorage.setItem("token", response.data.token);
 
         return navigation.navigate("MainPage");
       } catch (error) {

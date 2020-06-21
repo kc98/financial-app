@@ -67,7 +67,7 @@ class Transaction extends Model
     ];
 
     protected $appends = [
-        'category', 'timestamp'
+        'category', 'timestamp', 'type'
     ];
     
 
@@ -102,5 +102,9 @@ class Transaction extends Model
     public function getTimestampAttribute()
     {
         return $this->created_at;
+    }
+
+    public function getTypeAttribute() {
+        return $this->category()->first()->transactionType()->first()->transaction_type;
     }
 }

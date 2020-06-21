@@ -2,11 +2,29 @@ import React from "react";
 import { StyleSheet, Image, Dimensions } from "react-native";
 import { Container, Header, Content, View, Text } from "native-base";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
 export default function EntrancePage({ navigation }) {
+  const checkIfTokenExists = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      return navigation.navigate("MainPage");
+    } catch (error) {
+      console.log(error);
+
+      return;
+    }
+  };
+  checkIfTokenExists();
+
   return (
     <Container>
       <Header transparent />

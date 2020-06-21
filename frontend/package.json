@@ -9,6 +9,7 @@
     "start-public": "@powershell -Command $env:REACT_NATIVE_PACKAGER_HOSTNAME = $((iwr ipinfo.io/ip).Content); expo start"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.11.0",
     "@react-native-community/masked-view": "0.1.6",
     "@react-navigation/bottom-tabs": "^5.3.3",
     "@react-navigation/native": "^5.1.6",

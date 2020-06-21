@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   Container,
@@ -8,9 +8,16 @@ import {
   Icon,
   Button,
 } from "native-base";
-import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -19,7 +26,9 @@ import { styleSheetMain } from "../styles/styleSheetMain";
 import TransactionContainer from "./TransactionContainer";
 import YearMonthPicker from "./YearMonthPicker";
 
-export default function TransactionList() {
+import * as api from "../api";
+
+export default function TransactionList({ navigation }) {
   // const initDate = new Date();
   // const [date, setDate] = useState(
   //   new Date(initDate.getFullYear(), initDate.getMonth())
@@ -100,72 +109,65 @@ export default function TransactionList() {
   //   "November",
   //   "December",
   // ];
-  const transactionData = [
-    {
-      key: 1,
-      note: "Apples, carrots, and tomatoes",
-      amount: 12.1,
-      transactionType: "expense",
-      category: "Food",
-      date: "11 May 2020",
-    },
-    {
-      key: 2,
-      note: "Mr. Bean",
-      amount: 30,
-      transactionType: "expense",
-      category: "Movie",
-      date: "11 May 2020",
-    },
-    {
-      key: 3,
-      note: "Income #1",
-      amount: 150,
-      transactionType: "income",
-      category: "income#1",
-      date: "10 May 2020",
-    },
-    {
-      key: 4,
-      note: "Printing",
-      amount: 30,
-      transactionType: "expense",
-      category: "Print",
-      date: "10 May 2020",
-    },
-    {
-      key: 5,
-      note: "Shopping",
-      amount: 50,
-      transactionType: "income",
-      category: "Food",
-      date: "9 May 2020",
-    },
-    {
-      key: 6,
-      note: "Printing",
-      amount: 130,
-      transactionType: "expense",
-      category: "Food",
-      date: "9 May 2020",
-    },
-    {
-      key: 7,
-      note: "Printing",
-      amount: 130,
-      transactionType: "expense",
-      category: "Food",
-      date: "9 May 2020",
-    },
-    {
-      key: 8,
-      note: "Printing",
-      amount: 130,
-      transactionType: "expense",
-      category: "Food",
-      date: "8 May 2020",
-    },
-  ];
+
+  const [transactionData, setTransactionData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const checkUserToken = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.me(token);
+      // console.log("ping");
+    } catch (error) {
+      console.log(error.response.data);
+      await AsyncStorage.clear();
+      return navigation.navigate("EntrancePage");
+    }
+  };
+
+  const loadData = async () => {
+    await checkUserToken();
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+      let month = moment().subtract(1, "months").format("MMMM");
+      let year = moment().format("YYYY");
+      let response = await api.getTransactionList(token, month, year);
+      let transactionData = response.data.sort(
+        (a, b) =>
+          moment(b.timestamp).format("YYYYMMDD") -
+          moment(a.timestamp).format("YYYYMMDD")
+      );
+      setTransactionData(transactionData);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
+  let totalAmount = 0;
+  let currentDay = null;
+  const dataRow = transactionData.map((row, index) => {
+    totalAmount += row.amount;
+    let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
+
+    if (moment(row.timestamp).date() != currentDay) {
+      currentDay = moment(row.timestamp).date();
+      return (
+        <TransactionContainer
+          key={index}
+          date={moment(row.timestamp).format("DD")}
+          dayOfWeek={moment(row.timestamp).format("dddd")}
+          monthYear={moment(row.timestamp).format("MMM YYYY")}
+          transactionData={transactionData}
+        />
+      );
+    }
+  });
 
   const [startYear, setstartYear] = useState();
   const [endYear, setEndYear] = useState();
@@ -188,42 +190,43 @@ export default function TransactionList() {
       <Grid style={colors.backgroundGrey}>
         {/* MonthPicker is popping out red error, so commented for now */}
         {/* <MonthPicker /> */}
+
+        <Row style={{ height: 35 }}>
+          <View>
+            <TouchableOpacity onPress={showPicker}>
+              <Text>Show Picker</Text>
+            </TouchableOpacity>
+            <Text>
+              {selectedYear}-{selectedMonth}
+            </Text>
+            <YearMonthPicker ref={(picker) => (picker = picker)} />
+          </View>
+        </Row>
+        <Row style={[styleSheetMain.selectMonthYearContainer]}>
+          <Col size={1}></Col>
+          <Col size={1} style={[alignments.center]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Text style={[styleSheetMain.selectedMothYearText]}>
+                {moment().format("MMMM YYYY")}
+              </Text>
+            </TouchableOpacity>
+          </Col>
+          <Col size={1} style={[alignments.centerRight]}>
+            <TouchableOpacity style={{ backgroundColor: null }}>
+              <Icon
+                style={styleSheetMain.dropdownIcon}
+                type="AntDesign"
+                name="caretdown"
+              />
+            </TouchableOpacity>
+          </Col>
+        </Row>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
             justifyContent: "space-between",
           }}
         >
-          <Row>
-            <View>
-              <TouchableOpacity onPress={showPicker}>
-                <Text>Show Picker</Text>
-              </TouchableOpacity>
-              <Text>
-                {selectedYear}-{selectedMonth}
-              </Text>
-              <YearMonthPicker ref={(picker) => (picker = picker)} />
-            </View>
-          </Row>
-          <Row style={[styleSheetMain.selectMonthYearContainer]}>
-            <Col size={1}></Col>
-            <Col size={1} style={[alignments.center]}>
-              <TouchableOpacity style={{ backgroundColor: null }}>
-                <Text style={[styleSheetMain.selectedMothYearText]}>
-                  May 2020
-                </Text>
-              </TouchableOpacity>
-            </Col>
-            <Col size={1} style={[alignments.centerRight]}>
-              <TouchableOpacity style={{ backgroundColor: null }}>
-                <Icon
-                  style={styleSheetMain.dropdownIcon}
-                  type="AntDesign"
-                  name="caretdown"
-                />
-              </TouchableOpacity>
-            </Col>
-          </Row>
           <View style={{ height: 120 }}>
             <Row
               style={[
@@ -283,93 +286,32 @@ export default function TransactionList() {
               </Col>
             </Row>
           </View>
-          <Col
-            style={[styleSheetMain.transactionListContainer, { marginTop: 40 }]}
-          >
-            <Row
-              style={{
-                marginLeft: 10,
-                height: 70,
-                alignItems: "center",
-              }}
-            >
-              <Col style={{ width: 45, height: 40, justifyContent: "center" }}>
-                <Text style={{ fontWeight: "bold", fontSize: 32 }}>11</Text>
-              </Col>
-              <Col style={{ width: 100, height: 40 }}>
-                <Row>
-                  <Text style={{ fontSize: 14 }}>Monday</Text>
-                </Row>
-                <Row>
-                  <Text style={{ fontSize: 14 }}>May 2020</Text>
-                </Row>
-              </Col>
-              <Col
-                style={[
-                  styleSheetMain.rightContainer,
-                  { height: 40, marginRight: 10 },
-                ]}
-              >
-                <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                  - 42.10
-                </Text>
-              </Col>
-            </Row>
-            <Row style={{ paddingLeft: 10, marginBottom: 20 }}>
-              <Col>
-                <Row>
-                  <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-                    Grocery
-                  </Text>
-                </Row>
-                <Row>
-                  <Text style={{ fontSize: 14 }}>
-                    Apples, carrots, and tomatoes
-                  </Text>
-                </Row>
-              </Col>
-              <Col style={[alignments.centerRight, { marginRight: 10 }]}>
+          <View style={{ height: "100%" }}>
+            {isLoading ? (
+              <ActivityIndicator
+                style={{
+                  paddingTop: 40,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                }}
+                size="large"
+                color="#3C9A46"
+              />
+            ) : dataRow.length ? (
+              dataRow
+            ) : (
+              <View>
                 <Text
-                  style={[{ fontSize: 18, fontWeight: "bold" }, colors.red]}
+                  style={[
+                    texts.montserratRegular,
+                    { paddingTop: 40, paddingLeft: 10, paddingRight: 10 },
+                  ]}
                 >
-                  12.10
+                  There is no trasaction in this month.
                 </Text>
-              </Col>
-            </Row>
-            <Row style={{ paddingLeft: 10, marginBottom: 20 }}>
-              <Col>
-                <Row>
-                  <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-                    Movie
-                  </Text>
-                </Row>
-                <Row>
-                  <Text style={{ fontSize: 14 }}>Mr.Bean</Text>
-                </Row>
-              </Col>
-              <Col style={[alignments.centerRight, { marginRight: 10 }]}>
-                <Text
-                  style={[{ fontSize: 18, fontWeight: "bold" }, colors.red]}
-                >
-                  30.00
-                </Text>
-              </Col>
-            </Row>
-          </Col>
-          <TransactionContainer
-            date="10"
-            dayOfWeek="Sunday"
-            monthYear="May 2020"
-            transactionType="expense"
-            transactionCategory="movie"
-          />
-          <TransactionContainer
-            date="9"
-            dayOfWeek="Sunday"
-            monthYear="May 2020"
-            transactionType="expense"
-            transactionCategory="fuel"
-          />
+              </View>
+            )}
+          </View>
         </ScrollView>
       </Grid>
     </Container>
