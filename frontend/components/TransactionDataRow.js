@@ -26,8 +26,19 @@ import { styleSheetMain } from "../styles/styleSheetMain";
 import TransactionReportList from "./TransactionReportList";
 
 export default function TransactionDataRow(props) {
+  // console.log(props);
   const navigation = useNavigation();
-  const dataRow = props.transactionData.map((row, index) => {
+
+  let totalAmount = 0;
+  let descTransactionDate = props.transactionData.sort((a, b) => {
+    return parseFloat(b.amount).toFixed(2) - parseFloat(a.amount).toFixed(2);
+  });
+  var i;
+  for (i = 0; i < props.transactionData.length; i++) {
+    totalAmount += props.transactionData[i].amount;
+  }
+
+  const dataRow = descTransactionDate.map((row, index) => {
     var ColorCode =
       "hsl(" +
       360 * Math.random() +
@@ -37,13 +48,12 @@ export default function TransactionDataRow(props) {
       (55 + 5 * Math.random()) +
       "%)";
 
-    let amountWithTwoDecimal = parseFloat(row.totalAmount).toFixed(2);
     return (
       <TransactionReportList
         key={index}
-        name={row.name}
-        amount={amountWithTwoDecimal}
-        percentage={row.percentage}
+        name={row.category}
+        amount={parseFloat(row.amount).toFixed(2)}
+        percentage={parseFloat((row.amount / totalAmount) * 100).toFixed(2)}
         colorCode={ColorCode}
         navigateTo={props.navigateTo}
       />
@@ -120,4 +130,3 @@ export default function TransactionDataRow(props) {
     );
   }
 }
-const styles = StyleSheet.create({});

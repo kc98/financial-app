@@ -50,7 +50,7 @@ export default function TransactionReportList(props) {
           },
         ]}
       >
-        <Col size={3} style={{ paddingLeft: 10 }}>
+        <Col size={4} style={{ paddingLeft: 10 }}>
           <Text
             style={[
               texts.montserratRegular,
@@ -61,7 +61,7 @@ export default function TransactionReportList(props) {
             {props.name}
           </Text>
         </Col>
-        <Col size={2}>
+        <Col size={3}>
           <Text
             style={[alignments.center, texts.montserratRegular, texts.font_15]}
           >
@@ -69,7 +69,7 @@ export default function TransactionReportList(props) {
           </Text>
         </Col>
         <Col
-          size={1}
+          size={1.5}
           style={[
             alignments.center,
             {
@@ -80,7 +80,7 @@ export default function TransactionReportList(props) {
           ]}
         >
           <Text style={[texts.montserratRegular, texts.font_15]}>
-            {props.percentage}
+            {props.percentage}%
           </Text>
         </Col>
       </Row>

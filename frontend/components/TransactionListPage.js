@@ -134,7 +134,8 @@ export default function TransactionList({ navigation }) {
     try {
       setIsLoading(true);
       let token = await AsyncStorage.getItem("token");
-      let month = moment().subtract(1, "months").format("MMMM");
+      // let month = moment().subtract(1, "months").format("MMMM");
+      let month = moment().format("MMMM");
       let year = moment().format("YYYY");
       let response = await api.getTransactionList(token, month, year);
       let transactionData = response.data.sort(
@@ -149,10 +150,15 @@ export default function TransactionList({ navigation }) {
     }
   };
 
-  let totalAmount = 0;
+  let totalExpense = 0;
+  let totalIncome = 0;
   let currentDay = null;
   const dataRow = transactionData.map((row, index) => {
-    totalAmount += row.amount;
+    if (row.type == "expense") {
+      totalExpense += row.amount;
+    } else if (row.type == "income") {
+      totalIncome += row.amount;
+    }
     let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
 
     if (moment(row.timestamp).date() != currentDay) {
@@ -191,7 +197,7 @@ export default function TransactionList({ navigation }) {
         {/* MonthPicker is popping out red error, so commented for now */}
         {/* <MonthPicker /> */}
 
-        <Row style={{ height: 35 }}>
+        {/* <Row style={{ height: 35 }}>
           <View>
             <TouchableOpacity onPress={showPicker}>
               <Text>Show Picker</Text>
@@ -201,25 +207,25 @@ export default function TransactionList({ navigation }) {
             </Text>
             <YearMonthPicker ref={(picker) => (picker = picker)} />
           </View>
-        </Row>
+        </Row> */}
         <Row style={[styleSheetMain.selectMonthYearContainer]}>
-          <Col size={1}></Col>
-          <Col size={1} style={[alignments.center]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Text style={[styleSheetMain.selectedMothYearText]}>
-                {moment().format("MMMM YYYY")}
-              </Text>
-            </TouchableOpacity>
-          </Col>
-          <Col size={1} style={[alignments.centerRight]}>
-            <TouchableOpacity style={{ backgroundColor: null }}>
-              <Icon
-                style={styleSheetMain.dropdownIcon}
-                type="AntDesign"
-                name="caretdown"
-              />
-            </TouchableOpacity>
-          </Col>
+          <TouchableOpacity style={{ backgroundColor: null, width: "100%" }}>
+            <View style={{ flexDirection: "row" }}>
+              <Col size={1}></Col>
+              <Col size={1} style={[alignments.center]}>
+                <Text style={[styleSheetMain.selectedMothYearText]}>
+                  {moment().format("MMMM YYYY")}
+                </Text>
+              </Col>
+              <Col size={1} style={[alignments.centerRight]}>
+                <Icon
+                  style={styleSheetMain.dropdownIcon}
+                  type="AntDesign"
+                  name="caretdown"
+                />
+              </Col>
+            </View>
+          </TouchableOpacity>
         </Row>
         <ScrollView
           contentContainerStyle={{
@@ -240,7 +246,9 @@ export default function TransactionList({ navigation }) {
               <Col style={[styleSheetMain.rightContainer, { marginRight: 10 }]}>
                 <Text style={{ fontSize: 15 }}>- RM </Text>
 
-                <Text style={{ fontSize: 15 }}>XXX.XX</Text>
+                <Text style={{ fontSize: 15 }}>
+                  {parseFloat(totalExpense).toFixed(2)}
+                </Text>
               </Col>
             </Row>
             <Row
@@ -254,7 +262,9 @@ export default function TransactionList({ navigation }) {
               </Col>
               <Col style={[styleSheetMain.rightContainer, { marginRight: 10 }]}>
                 <Text style={{ fontSize: 15 }}>+ RM </Text>
-                <Text style={{ fontSize: 15 }}>XXXX.XX</Text>
+                <Text style={{ fontSize: 15 }}>
+                  {parseFloat(totalIncome).toFixed(2)}
+                </Text>
               </Col>
             </Row>
             <Row
@@ -281,7 +291,7 @@ export default function TransactionList({ navigation }) {
               >
                 <Text style={{ fontSize: 15, fontWeight: "bold" }}>RM </Text>
                 <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                  XXXX.XX
+                  {parseFloat(totalIncome - totalExpense).toFixed(2)}
                 </Text>
               </Col>
             </Row>

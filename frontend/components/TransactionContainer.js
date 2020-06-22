@@ -11,26 +11,22 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 import TransactionListRow from "./TransactionListRow";
 
 export default function TransactionContainer(props) {
-  let totalAmount = 0;
-  let x;
+  let totalIncome = 0;
+  let totalExpense = 0;
+  let amountOfDay = 0;
   const dataRow = props.transactionData.map((row, index) => {
-    totalAmount += row.amount;
     let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
-    return (x = 2);
-    // <TransactionContainer
-    // key={index}
-    //         date="9"
-    //         dayOfWeek="Sunday"
-    //         monthYear="May 2020"
-    //         transactionType="expense"
-    //         transactionCategory="fuel"
-    //       />
-  });
 
-  // let amountOfDay = 0;
-  // if (moment(row.timestamp).date() == props.date) {
-  //   // TODO
-  // }
+    if (moment(row.timestamp).date() == props.date) {
+      // TODO
+      if (row.type == "expense") {
+        totalExpense += row.amount;
+      } else if (row.type == "income") {
+        totalIncome += row.amount;
+      }
+      amountOfDay = totalIncome - totalExpense;
+    }
+  });
 
   return (
     <Col style={[styleSheetMain.transactionListContainer, { marginTop: 40 }]}>
@@ -62,7 +58,9 @@ export default function TransactionContainer(props) {
             { height: 40, marginRight: 10 },
           ]}
         >
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>- 42.10</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+            {parseFloat(amountOfDay).toFixed(2)}
+          </Text>
         </Col>
       </Row>
 
