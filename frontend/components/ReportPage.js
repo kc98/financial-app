@@ -41,15 +41,6 @@ import * as api from "../api";
 
 //{ navigation }
 export default function ReportPage() {
-  // const expenseData = [
-  //   { key: 1, name: "Food", totalAmount: 300, percentage: "46%" },
-  //   { key: 2, name: "Movie", totalAmount: 200, percentage: "31%" },
-  //   { key: 3, name: "Parking", totalAmount: 150, percentage: "23%" },
-  //   { key: 4, name: "Printing", totalAmount: 50, percentage: "13%" },
-  //   { key: 5, name: "Shopping", totalAmount: 50, percentage: "13%" },
-  //   { key: 6, name: "Printing", totalAmount: 130, percentage: "2%" },
-  // ];
-
   const incomeData = [
     { key: 1, name: "Income #1", totalAmount: 3000, percentage: "75%" },
     { key: 2, name: "Income #2", totalAmount: 500, percentage: "10%" },
@@ -111,48 +102,23 @@ export default function ReportPage() {
   let expenseArray = [];
   let incomeArray = [];
   var i;
-  let categoryName = null;
 
   for (i = 0; i < transactionData.length; i++) {
-    // if (transactionData[i].category != categoryName) {
-    //   categoryName = transactionData[i].category;
-    //   console.log(categoryName);
-    console.log(transactionData[i].category);
+    // console.log(transactionData[i].category);
     if (transactionData[i].type == "expense") {
       expenseArray.push(transactionData[i]);
     } else {
       incomeArray.push(transactionData[i]);
     }
-    // }
   }
-  const dataRow = transactionData.map((row, index) => {
-    if (row.type == "expense") {
-      totalExpense += row.amount;
-    } else if (row.type == "income") {
-      totalIncome += row.amount;
-    }
-    let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
-    // if (row.category != categoryName) {
-    //   categoryName = row.category;
-    // }
-    // if (row.type == "expense") {
-    //   expenseArray.push(row);
-    // } else {
-    //   incomeArray.push(row);
-    // }
-    // if (moment(row.timestamp).date() != currentDay) {
-    //   currentDay = moment(row.timestamp).date();
-    //   return (
-    //     <TransactionContainer
-    //       key={index}
-    //       date={moment(row.timestamp).format("DD")}
-    //       dayOfWeek={moment(row.timestamp).format("dddd")}
-    //       monthYear={moment(row.timestamp).format("MMM YYYY")}
-    //       transactionData={transactionData}
-    //     />
-    //   );
-    // }
-  });
+  // const dataRow = transactionData.map((row, index) => {
+  //   if (row.type == "expense") {
+  //     totalExpense += row.amount;
+  //   } else if (row.type == "income") {
+  //     totalIncome += row.amount;
+  //   }
+  //   let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
+  // });
   return (
     <Container>
       <Header transparent />
@@ -256,7 +222,7 @@ export default function ReportPage() {
           ) : (
             <View style={{ height: "100%" }}>
               <TransactionDataRow
-                title="Income"
+                title="Expense"
                 transactionData={expenseArray}
                 navigateTo={"ReportDetailPage"}
               />

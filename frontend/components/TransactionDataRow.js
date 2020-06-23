@@ -29,16 +29,48 @@ export default function TransactionDataRow(props) {
   // console.log(props);
   const navigation = useNavigation();
 
-  let totalAmount = 0;
-  let descTransactionDate = props.transactionData.sort((a, b) => {
-    return parseFloat(b.amount).toFixed(2) - parseFloat(a.amount).toFixed(2);
-  });
-  var i;
-  for (i = 0; i < props.transactionData.length; i++) {
-    totalAmount += props.transactionData[i].amount;
+  function compare(a, b) {
+    // Use toUpperCase() to ignore character casing
+    const categoryA = a.category.toUpperCase();
+    const categoryB = b.category.toUpperCase();
+
+    let comparison = 0;
+    if (categoryA > categoryB) {
+      comparison = 1;
+    } else if (categoryA < categoryB) {
+      comparison = -1;
+    }
+    return comparison;
   }
 
-  const dataRow = descTransactionDate.map((row, index) => {
+  let totalAmount = 0;
+  let transactionArray = [];
+  let arrangedTransactionArray = [];
+  let categoryName = null;
+  let nextItem = null;
+
+  transactionArray = props.transactionData.sort(compare);
+  for (let i = 0; i < transactionArray.length; i++) {
+    totalAmount += transactionArray[i].amount;
+
+    if (transactionArray[i].category != categoryName) {
+      categoryName = transactionArray[i].category;
+      arrangedTransactionArray.push(transactionArray[i]);
+    } else {
+      let index = arrangedTransactionArray.length - 1;
+      arrangedTransactionArray[index].amount += transactionArray[i].amount;
+    }
+  }
+
+  for (let transaction of arrangedTransactionArray) {
+    console.log(`${transaction.category} -> ${transaction.amount}`);
+  }
+
+  let descTransactionData = arrangedTransactionArray.sort((a, b) => {
+    return b.amount - a.amount;
+  });
+
+  const dataRow = descTransactionData.map((row, index) => {
     var ColorCode =
       "hsl(" +
       360 * Math.random() +

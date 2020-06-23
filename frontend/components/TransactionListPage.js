@@ -121,7 +121,6 @@ export default function TransactionList({ navigation }) {
     try {
       let token = await AsyncStorage.getItem("token");
       let response = await api.me(token);
-      // console.log("ping");
     } catch (error) {
       console.log(error.response.data);
       await AsyncStorage.clear();

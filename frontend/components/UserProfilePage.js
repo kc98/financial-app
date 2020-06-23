@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   Container,
@@ -17,7 +17,13 @@ import {
   Button,
 } from "native-base";
 
-import { StyleSheet, Image, Dimensions, TextInput, Alert } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  Dimensions,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { ScrollView } from "react-native-gesture-handler";
@@ -31,6 +37,8 @@ import { colors } from "../styles/colors";
 import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
+
+import * as api from "../api";
 
 export default function UserProfilePage({ navigation }) {
   const handlePreferencesOnPress = () => {
@@ -71,126 +79,163 @@ export default function UserProfilePage({ navigation }) {
       ]
     );
   };
+  useEffect(() => {
+    checkUserToken();
+  }, []);
+  const [userData, setUserData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const checkUserToken = async () => {
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.me(token);
+      let userData = response.data;
+      setUserData(userData);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error.response.data);
+      await AsyncStorage.clear();
+      return navigation.navigate("EntrancePage");
+    }
+  };
+
+  console.log(userData);
   return (
     <Container>
       <Header transparent />
       <Grid style={colors.backgroundGrey}>
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "space-between",
-          }}
-        >
-          <Row style={[alignments.center, { height: 100, marginTop: 30 }]}>
-            <View
-              style={{
-                width: 110,
-                height: 110,
-                // borderWidth: 1,
-                borderRadius: 70,
-                overflow: "hidden",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#fff",
-                padding: 15,
-              }}
-            >
-              <Image
-                style={{
-                  width: "100%",
-                  height: "100%",
-                }}
-                source={require("../img/user.png")}
-              />
-            </View>
-          </Row>
-          <Row style={[alignments.center, { height: 30, marginTop: 20 }]}>
-            <Text
-              style={[
-                texts.montserratBold,
-                alignments.center,
-                { fontSize: 16 },
-              ]}
-            >
-              YEAP KHOR CHIN
-            </Text>
-          </Row>
+        {isLoading ? (
           <View
-            style={{
-              backgroundColor: "#fff",
-              marginTop: 20,
-              marginLeft: 25,
-              marginRight: 25,
-              marginBottom: 30,
-              borderRadius: 20,
-              padding: 25,
+            style={[
+              {
+                height: "100%",
+                width: "100%",
+              },
+              alignments.center,
+            ]}
+          >
+            <ActivityIndicator
+              // style={alignments.center}
+              size="large"
+              color="#3C9A46"
+            />
+          </View>
+        ) : (
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "space-between",
             }}
           >
-            <Row style={{ marginTop: 5 }}>
-              <Col size={2}>
-                <Text style={texts.montserratBold}>Name:</Text>
-              </Col>
-              <Col size={3}>
-                <Text style={texts.montserratRegular}> Yeap Khor Chin</Text>
-              </Col>
+            <Row style={[alignments.center, { height: 100, marginTop: 30 }]}>
+              <View
+                style={{
+                  width: 110,
+                  height: 110,
+                  // borderWidth: 1,
+                  borderRadius: 70,
+                  overflow: "hidden",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#fff",
+                  padding: 15,
+                }}
+              >
+                <Image
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  source={require("../img/user.png")}
+                />
+              </View>
             </Row>
-            <Row style={{ marginTop: 20 }}>
-              <Col size={2}>
-                <Text style={texts.montserratBold}>Email:</Text>
-              </Col>
-              <Col size={3}>
-                <Text style={texts.montserratRegular}>
-                  testing123@gmail.com
+            <Row style={[alignments.center, { height: 30, marginTop: 20 }]}>
+              <Text
+                style={[
+                  texts.montserratBold,
+                  alignments.center,
+                  { fontSize: 16 },
+                ]}
+              >
+                {userData.name}
+              </Text>
+            </Row>
+            <View
+              style={{
+                backgroundColor: "#fff",
+                marginTop: 20,
+                marginLeft: 25,
+                marginRight: 25,
+                marginBottom: 30,
+                borderRadius: 20,
+                padding: 25,
+              }}
+            >
+              <Row style={{ marginTop: 5 }}>
+                <Col size={2}>
+                  <Text style={texts.montserratBold}>Name:</Text>
+                </Col>
+                <Col size={3}>
+                  <Text style={texts.montserratRegular}>{userData.name}</Text>
+                </Col>
+              </Row>
+              <Row style={{ marginTop: 20 }}>
+                <Col size={2}>
+                  <Text style={texts.montserratBold}>Email:</Text>
+                </Col>
+                <Col size={3}>
+                  <Text style={texts.montserratRegular}>{userData.email}</Text>
+                </Col>
+              </Row>
+              <Row
+                style={[
+                  alignments.center,
+                  { height: 30, marginTop: 45, marginBottom: 10 },
+                ]}
+              >
+                <Button
+                  style={[styles.primaryButtonRadius25, widths.width_50]}
+                  onPress={handleProfileChangeOnPress}
+                >
+                  <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
+                    Change
+                  </Text>
+                </Button>
+              </Row>
+            </View>
+            <Row style={[alignments.center, { height: 30 }]}>
+              <Button
+                style={[
+                  styleSheetMain.tertiaryButton,
+                  widths.width_50,
+                  { height: 48 },
+                ]}
+                onPress={handlePreferencesOnPress}
+              >
+                <Text style={[styleSheetMain.buttonTextMedium, colors.black]}>
+                  Preferences
                 </Text>
-              </Col>
+              </Button>
             </Row>
             <Row
               style={[
                 alignments.center,
-                { height: 30, marginTop: 45, marginBottom: 10 },
+                { height: 30, marginTop: 40, marginBottom: 40 },
               ]}
             >
               <Button
-                style={[styles.primaryButtonRadius25, widths.width_50]}
-                onPress={handleProfileChangeOnPress}
+                style={[styles.primaryButtonRadius18, widths.width_50]}
+                onPress={handleLogoutOnPress}
               >
                 <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
-                  Change
+                  Logout
                 </Text>
               </Button>
             </Row>
-          </View>
-          <Row style={[alignments.center, { height: 30 }]}>
-            <Button
-              style={[
-                styleSheetMain.tertiaryButton,
-                widths.width_50,
-                { height: 48 },
-              ]}
-              onPress={handlePreferencesOnPress}
-            >
-              <Text style={[styleSheetMain.buttonTextMedium, colors.black]}>
-                Preferences
-              </Text>
-            </Button>
-          </Row>
-          <Row
-            style={[
-              alignments.center,
-              { height: 30, marginTop: 40, marginBottom: 40 },
-            ]}
-          >
-            <Button
-              style={[styles.primaryButtonRadius18, widths.width_50]}
-              onPress={handleLogoutOnPress}
-            >
-              <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
-                Logout
-              </Text>
-            </Button>
-          </Row>
-        </ScrollView>
+          </ScrollView>
+        )}
       </Grid>
     </Container>
   );
