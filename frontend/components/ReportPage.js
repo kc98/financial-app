@@ -41,31 +41,14 @@ import * as api from "../api";
 
 //{ navigation }
 export default function ReportPage() {
-  const incomeData = [
-    { key: 1, name: "Income #1", totalAmount: 3000, percentage: "75%" },
-    { key: 2, name: "Income #2", totalAmount: 500, percentage: "10%" },
-    { key: 3, name: "Income #3", totalAmount: 150, percentage: "5%" },
-  ];
-
   const [transactionData, setTransactionData] = useState([]);
-  const [expenseData, setExpenseData] = useState([]);
+  const [openingBalance, setOpeningBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const checkUserToken = async () => {
-    try {
-      let token = await AsyncStorage.getItem("token");
-      let response = await api.me(token);
-      // console.log("ping");
-    } catch (error) {
-      console.log(error.response.data);
-      await AsyncStorage.clear();
-      return navigation.navigate("EntrancePage");
-    }
-  };
   function compare(a, b) {
     // Use toUpperCase() to ignore character casing
     const categoryA = a.category.toUpperCase();
@@ -80,19 +63,26 @@ export default function ReportPage() {
     return comparison;
   }
   const loadData = async () => {
-    await checkUserToken();
     try {
       setIsLoading(true);
       let token = await AsyncStorage.getItem("token");
+      console.log(token);
       let month = moment().subtract(4, "months").format("MMMM");
       let year = moment().format("YYYY");
       let response = await api.getTransactionList(token, month, year);
-      let transactionData = response.data.sort(compare);
+      let transactionData = response.data.transactions.sort(compare);
 
+      setOpeningBalance(response.data.opening_balance);
       setTransactionData(transactionData);
       setIsLoading(false);
     } catch (error) {
-      console.log(error.response.data);
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
     }
   };
 
@@ -104,21 +94,15 @@ export default function ReportPage() {
   var i;
 
   for (i = 0; i < transactionData.length; i++) {
-    // console.log(transactionData[i].category);
     if (transactionData[i].type == "expense") {
       expenseArray.push(transactionData[i]);
+      totalExpense += transactionData[i].amount;
     } else {
       incomeArray.push(transactionData[i]);
+      totalIncome += transactionData[i].amount;
     }
   }
-  // const dataRow = transactionData.map((row, index) => {
-  //   if (row.type == "expense") {
-  //     totalExpense += row.amount;
-  //   } else if (row.type == "income") {
-  //     totalIncome += row.amount;
-  //   }
-  //   let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
-  // });
+
   return (
     <Container>
       <Header transparent />
@@ -159,8 +143,9 @@ export default function ReportPage() {
                 <Text style={{ fontSize: 15 }}>Opening Balance:</Text>
               </Col>
               <Col style={[styleSheetMain.rightContainer, { marginRight: 10 }]}>
-                <Text style={{ fontSize: 15 }}>+ RM </Text>
-                <Text style={{ fontSize: 15 }}>XXX.XX</Text>
+                <Text style={{ fontSize: 15 }}>
+                  {openingBalance < 0 ? "-" : "+"} MYR {openingBalance}
+                </Text>
               </Col>
             </Row>
             <Row
@@ -173,8 +158,13 @@ export default function ReportPage() {
                 <Text style={{ fontSize: 15 }}>Ending Balance:</Text>
               </Col>
               <Col style={[styleSheetMain.rightContainer, { marginRight: 10 }]}>
-                <Text style={{ fontSize: 15 }}>+ RM </Text>
-                <Text style={{ fontSize: 15 }}>XXXX.XX</Text>
+                <Text style={{ fontSize: 15 }}>
+                  {openingBalance - totalExpense + totalIncome < 0 ? "-" : "+"}{" "}
+                  MYR{" "}
+                  {parseFloat(
+                    openingBalance - totalExpense + totalIncome
+                  ).toFixed(2)}
+                </Text>
               </Col>
             </Row>
             <Row
@@ -199,9 +189,9 @@ export default function ReportPage() {
                   },
                 ]}
               >
-                <Text style={{ fontSize: 15, fontWeight: "bold" }}>- RM </Text>
                 <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                  XXXX.XX
+                  {totalIncome - totalExpense < 0 ? "-" : "+"} MYR{" "}
+                  {parseFloat(Math.abs(totalIncome - totalExpense)).toFixed(2)}
                 </Text>
               </Col>
             </Row>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text, View } from "native-base";
-import { Image } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -31,7 +31,14 @@ export default function TransactionListRow(props) {
   }
 
   return (
-    <Row style={{ paddingLeft: 10, marginBottom: 15 }}>
+    <Row
+      style={{ paddingLeft: 5.5, marginBottom: 15 }}
+      onPress={() =>
+        props.navigation.navigate("TransactionDetailPage", {
+          transactionId: props.id,
+        })
+      }
+    >
       <Col>
         <Row>
           <Text style={{ fontSize: 14, fontWeight: "bold" }}>

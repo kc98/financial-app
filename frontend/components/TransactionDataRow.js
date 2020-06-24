@@ -62,10 +62,6 @@ export default function TransactionDataRow(props) {
     }
   }
 
-  for (let transaction of arrangedTransactionArray) {
-    console.log(`${transaction.category} -> ${transaction.amount}`);
-  }
-
   let descTransactionData = arrangedTransactionArray.sort((a, b) => {
     return b.amount - a.amount;
   });

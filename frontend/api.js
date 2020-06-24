@@ -4,8 +4,7 @@ import qs from "querystring";
 
 //change http://localhost:8000/api
 //tom's:http://210.195.9.215:8000/api
-// const BACKEND_URL = "http://192.168.0.175:8000/api";
-const BACKEND_URL = "http://210.195.24.173:8000/api";
+const BACKEND_URL = "http://192.168.0.175:8000/api";
 export function login(email, password) {
   return Axios.post(
     `${BACKEND_URL}/login`,
@@ -41,6 +40,23 @@ export function getTransactionList(token, month, year) {
     params: {
       month,
       year,
+    },
+  });
+}
+
+export function getTransaction(token, id) {
+  return Axios.get(`${BACKEND_URL}/transactions/${id}`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function getCategoryList() {
+  return Axios.get(`${BACKEND_URL}/categories`, {
+    headers: {
+      Accept: "application/json",
     },
   });
 }

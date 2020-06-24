@@ -43,11 +43,15 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/profile', 'UserController@update');
 
     Route::get('/transactions', 'TransactionController@index'); // Browse
-    Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read http://localhost:8000/api/transaction/123
+    Route::get('/transactions/{transaction}', 'TransactionController@show'); // Read http://localhost:8000/api/transactions/123
     Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit
     Route::post('/transactions', 'TransactionController@store'); // Add
     Route::delete('/transactions/{transaction}', 'TransactionController@destroy'); // Delete
+
+    
 });
+
+Route::get('/categories', 'CategoryController@index'); // Browse
 
 /**
  * Phase 2: Insight

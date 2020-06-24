@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   Container,
@@ -10,12 +10,13 @@ import {
   Segment,
 } from "native-base";
 
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import DatePicker from "react-native-datepicker";
 import PickerModal from "react-native-picker-modal-view";
 import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -24,73 +25,103 @@ import { buttons } from "../styles/buttons";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
 
-export default function TransactionDetailPage() {
+import * as api from "../api";
+
+export default function TransactionDetailPage(props) {
   const currentDateTime = new Date();
+  const transactionId = props.route.params.transactionId;
 
-  const transactionData = {
-    key: 1,
-    note: "Movie",
-    amount: 20,
-    timestamp: "1590858208778",
-    category: "Income #3",
-    transactionType: "income",
+  const [transactionData, setTransactionData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCategoryLoading, setCategoryIsLoading] = useState(false);
+  let defaultCategory;
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      await loadCategoryData();
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.getTransaction(token, transactionId);
+      let transactionData = response.data;
+      setTransactionData(transactionData);
+
+      setSelectedDateTime(
+        moment(transactionData.timestamp).format("DD/MM/YYYY, h:mm a")
+      );
+
+      defaultCategory = { Name: transactionData.category };
+      setSelectedCategory(defaultCategory);
+      setTransactionNote(transactionData.description);
+      setAmount(parseFloat(transactionData.amount).toFixed(2));
+
+      if (transactionData.type != "expense") {
+        setTransactionMode(false);
+      } else {
+        setTransactionMode(true);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
+    }
   };
-  const defaultCategory = { Name: transactionData.category };
-  let dateTime = moment(transactionData.timestamp, "x").format(
-    "DD/MM/YYYY, h:mm a"
-  );
+  let dateTime = moment(transactionData.timestamp).format("DD/MM/YYYY, h:mm a");
 
-  let selectedTransactionMode = true;
-  if (transactionData.transactionType != "expense") {
-    selectedTransactionMode = false;
-  }
+  const [transactionMode, setTransactionMode] = useState(null);
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [transactionNote, setTransactionNote] = useState(null);
+  const [amount, setAmount] = useState(0);
+  const [categoryData, setCategoryData] = useState([]);
+  const [expenseList, setExpenseList] = useState([]);
+  const [incomeList, setIncomeList] = useState([]);
 
-  const [transactionMode, setTransactionMode] = useState(
-    selectedTransactionMode
-  );
-  const [selectedDateTime, setSelectedDateTime] = useState(dateTime);
-  const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
-  const [transactionNote, setTransactionNote] = useState(transactionData.note);
-  const [amount, setAmount] = useState(
-    parseFloat(transactionData.amount).toFixed(2)
-  );
-  const expenseList = [
-    { Id: 1, Name: "Expense #1" },
-    { Id: 2, Name: "Expense #2" },
-    { Id: 3, Name: "Expense #3" },
-    { Id: 4, Name: "Expense #4" },
-    { Id: 5, Name: "testing " },
-    { Id: 6, Name: "food" },
-    { Id: 7, Name: "testing " },
-    { Id: 8, Name: "fossssod" },
-    { Id: 9, Name: "testing123" },
-    { Id: 10, Name: "aaaaaaa" },
-    { Id: 11, Name: "bbbbbbb " },
-    { Id: 12, Name: "vvvvvv" },
-    { Id: 13, Name: "xxxxxxxx" },
-    { Id: 14, Name: "zzzzzzzzzz" },
-    { Id: 15, Name: "bbnnnn" },
-    { Id: 16, Name: "qqqqqqq" },
-  ];
+  const loadCategoryData = async () => {
+    try {
+      setCategoryIsLoading(true);
+      let response = await api.getCategoryList();
+      let categoryData = response.data;
+      setCategoryData(categoryData);
 
-  const incomeList = [
-    { Id: 17, Name: "Income #1" },
-    { Id: 18, Name: "Income #2" },
-    { Id: 19, Name: "Income #3" },
-    { Id: 20, Name: "Income #4" },
-    { Id: 21, Name: "interest testing" },
-    { Id: 22, Name: "Deposit" },
-    { Id: 23, Name: "testing111" },
-    { Id: 24, Name: "cccccccccc" },
-    { Id: 25, Name: "testing321 " },
-    { Id: 26, Name: "mmmmmmmmm" },
-    { Id: 27, Name: "bbbbbbb " },
-    { Id: 28, Name: "vvvvvv" },
-    { Id: 29, Name: "xxxxxxxx " },
-    { Id: 30, Name: "zzzzzzzzzz" },
-    { Id: 31, Name: "bbnnnn" },
-    { Id: 32, Name: "qqqqqqq" },
-  ];
+      // if (CategoriesData.type != "expense") {
+      //   setTransactionMode(false);
+      // } else {
+      //   setTransactionMode(true);
+      // }
+
+      let expenseArray = [];
+      let incomeArray = [];
+
+      for (let i = 0; i < categoryData.length; i++) {
+        if (categoryData[i].transaction_type_id == 2) {
+          expenseArray.push({
+            Id: categoryData[i].id,
+            Name: categoryData[i].category,
+          });
+        } else {
+          incomeArray.push({
+            Id: categoryData[i].id,
+            Name: categoryData[i].category,
+          });
+        }
+      }
+
+      setExpenseList(expenseArray);
+      setIncomeList(incomeArray);
+      setCategoryIsLoading(false);
+    } catch (error) {
+      // Unhandled errors
+      console.log(error.response);
+    }
+  };
 
   function switchTransactionMode() {
     setTransactionMode(!transactionMode);
@@ -131,6 +162,10 @@ export default function TransactionDetailPage() {
         "DD/MM/YYYY, h:mm:ss a"
       );
       let amoutWithTwoDecimal = parseFloat(amount).toFixed(2);
+      let categoryString = selectedCategory.Name
+        ? selectedCategory.Name
+        : selectedCategory;
+
       Alert.alert(
         "Transaction is Updated",
         "Date and Time: " +
@@ -138,7 +173,7 @@ export default function TransactionDetailPage() {
           " Amount: " +
           amoutWithTwoDecimal +
           " Category: " +
-          selectedCategory +
+          categoryString +
           " Note: " +
           transactionNote,
         [{ text: "OK" }]
@@ -156,112 +191,182 @@ export default function TransactionDetailPage() {
     <Container>
       <Header transparent />
       <Grid style={[colors.backgroundGrey]}>
-        <View
-          style={[
-            colors.backgroundWhite,
-            widths.width_100,
-            { marginTop: 40, marginBottom: 35, height: 550 },
-          ]}
-        >
-          <Row
+        {isLoading ? (
+          <View
             style={[
-              widths.width_100,
+              {
+                height: "100%",
+                width: "100%",
+              },
               alignments.center,
-              { height: 45, marginBottom: 50 },
             ]}
           >
-            <Segment style={[colors.backgroundWhite, { marginTop: 40 }]}>
-              <Button
-                first
-                style={{
-                  backgroundColor: transactionMode ? "#46C553" : "#fff",
-                  borderColor: "#98ab9a",
-                  padding: 10,
-                }}
-                active={transactionMode}
-                onPress={() => {
-                  !transactionMode ? switchTransactionMode() : "";
-                }}
-              >
-                <Text
+            <ActivityIndicator
+              // style={alignments.center}
+              size="large"
+              color="#3C9A46"
+            />
+          </View>
+        ) : (
+          <View
+            style={[
+              colors.backgroundWhite,
+              widths.width_100,
+              { marginTop: 40, marginBottom: 35, height: 550 },
+            ]}
+          >
+            <Row
+              style={[
+                widths.width_100,
+                alignments.center,
+                { height: 45, marginBottom: 50 },
+              ]}
+            >
+              <Segment style={[colors.backgroundWhite, { marginTop: 40 }]}>
+                <Button
+                  first
                   style={{
-                    color: transactionMode ? "#fff" : "#000",
-                    fontWeight: transactionMode ? "bold" : "normal",
+                    backgroundColor: transactionMode ? "#46C553" : "#fff",
+                    borderColor: "#98ab9a",
+                    padding: 10,
+                  }}
+                  active={transactionMode}
+                  onPress={() => {
+                    !transactionMode ? switchTransactionMode() : "";
                   }}
                 >
-                  Expense
-                </Text>
-              </Button>
-              <Button
-                last
-                style={{
-                  backgroundColor: transactionMode ? "#fff" : "#46C553",
-                  borderColor: "#98ab9a",
-                  padding: 10,
-                }}
-                active={!transactionMode}
-                onPress={() => {
-                  transactionMode ? switchTransactionMode() : "";
-                }}
-              >
-                <Text
+                  <Text
+                    style={{
+                      color: transactionMode ? "#fff" : "#000",
+                      fontWeight: transactionMode ? "bold" : "normal",
+                    }}
+                  >
+                    Expense
+                  </Text>
+                </Button>
+                <Button
+                  last
                   style={{
-                    color: transactionMode ? "#000" : "#fff",
-                    fontWeight: transactionMode ? "normal" : "bold",
+                    backgroundColor: transactionMode ? "#fff" : "#46C553",
+                    borderColor: "#98ab9a",
+                    padding: 10,
+                  }}
+                  active={!transactionMode}
+                  onPress={() => {
+                    transactionMode ? switchTransactionMode() : "";
                   }}
                 >
-                  Income
-                </Text>
-              </Button>
-            </Segment>
-          </Row>
-          <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
-            <Row style={[styles.transactionInputRow]}>
-              <Col size={1}>
-                <Label style={[texts.montserratRegular, texts.font_16]}>
-                  Date:
-                </Label>
-              </Col>
-              <Col size={2}>
-                <DatePicker
-                  style={{ width: 225 }}
-                  date={selectedDateTime}
-                  mode="datetime"
-                  placeholder="select date and time"
-                  format="DD/MM/YYYY, h:mm a"
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  customStyles={{
-                    dateIcon: {
-                      position: "absolute",
-                      left: 0,
-                      top: 4,
-                      marginLeft: 0,
-                    },
-                    dateInput: { marginLeft: 36 },
-                  }}
-                  // onDateChange={(date) => {
-                  //   setSelectedDate(date);
-                  // }}
-                  onDateChange={handleOnDateChange}
-                />
-              </Col>
+                  <Text
+                    style={{
+                      color: transactionMode ? "#000" : "#fff",
+                      fontWeight: transactionMode ? "normal" : "bold",
+                    }}
+                  >
+                    Income
+                  </Text>
+                </Button>
+              </Segment>
             </Row>
-            <Row style={[styles.transactionInputRow]}>
-              <Col size={2}>
-                <Label style={[texts.montserratRegular, texts.font_16]}>
-                  Amount:
-                </Label>
-              </Col>
-              <Col size={1}>
-                <Label style={[texts.montserratRegular, texts.font_16]}>
-                  MYR
-                </Label>
-              </Col>
-              <Col size={3} style={{ height: 30 }}>
+            <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
+              <Row style={[styles.transactionInputRow]}>
+                <Col size={1}>
+                  <Label style={[texts.montserratRegular, texts.font_16]}>
+                    Date:
+                  </Label>
+                </Col>
+                <Col size={2}>
+                  <DatePicker
+                    style={{ width: 225 }}
+                    date={selectedDateTime}
+                    mode="datetime"
+                    placeholder="select date and time"
+                    format="DD/MM/YYYY, h:mm a"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                      dateIcon: {
+                        position: "absolute",
+                        left: 0,
+                        top: 4,
+                        marginLeft: 0,
+                      },
+                      dateInput: { marginLeft: 36 },
+                    }}
+                    // onDateChange={(date) => {
+                    //   setSelectedDate(date);
+                    // }}
+                    onDateChange={handleOnDateChange}
+                  />
+                </Col>
+              </Row>
+              <Row style={[styles.transactionInputRow]}>
+                <Col size={2}>
+                  <Label style={[texts.montserratRegular, texts.font_16]}>
+                    Amount:
+                  </Label>
+                </Col>
+                <Col size={1}>
+                  <Label style={[texts.montserratRegular, texts.font_16]}>
+                    MYR
+                  </Label>
+                </Col>
+                <Col size={3} style={{ height: 30 }}>
+                  <Input
+                    placeholder="0.00"
+                    returnKeyType="done"
+                    style={[
+                      styleSheetMain.labelBlack,
+                      {
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#4EAE58",
+                      },
+                    ]}
+                    keyboardType="numeric"
+                    onChange={handleAmountOnChange}
+                    value={amount}
+                  />
+                </Col>
+              </Row>
+              <Row style={[styles.transactionInputRow]}>
+                <Col size={2}>
+                  <Label style={[texts.montserratRegular, texts.font_16]}>
+                    Category:
+                  </Label>
+                </Col>
+                <Col size={4}>
+                  <PickerModal
+                    onSelected={handleCategoryOnSelect}
+                    items={transactionMode ? expenseList : incomeList} // Original -> expenseArray : incomeArray
+                    sortingLanguage={"us"}
+                    showToTopButton={true}
+                    selected={selectedCategory}
+                    showAlphabeticalIndex={true}
+                    autoGenerateAlphabeticalIndex={true}
+                    selectPlaceholderText={"Select Category..."}
+                    searchPlaceholderText={"Search..."}
+                    requireSelection={false}
+                    autoSort={false}
+                  />
+                </Col>
+              </Row>
+              <Row style={[styles.transactionInputRow, { height: 45 }]}>
+                <Col size={2}>
+                  <Label style={[texts.montserratRegular, texts.font_16]}>
+                    Note:
+                  </Label>
+                </Col>
+              </Row>
+              <Row
+                style={[
+                  {
+                    paddingLeft: 45,
+                    paddingRight: 40,
+                    marginBottom: 20,
+                    height: 75,
+                  },
+                ]}
+              >
                 <Input
-                  placeholder="0.00"
-                  returnKeyType="done"
                   style={[
                     styleSheetMain.labelBlack,
                     {
@@ -269,87 +374,35 @@ export default function TransactionDetailPage() {
                       borderBottomColor: "#4EAE58",
                     },
                   ]}
-                  keyboardType="numeric"
-                  onChange={handleAmountOnChange}
-                  value={amount}
+                  multiline={true}
+                  onChange={handleTransactionNoteOnChange}
+                  value={transactionNote}
                 />
-              </Col>
-            </Row>
-            <Row style={[styles.transactionInputRow]}>
-              <Col size={2}>
-                <Label style={[texts.montserratRegular, texts.font_16]}>
-                  Category:
-                </Label>
-              </Col>
-              <Col size={4}>
-                <PickerModal
-                  onSelected={handleCategoryOnSelect}
-                  items={transactionMode ? expenseList : incomeList}
-                  sortingLanguage={"tr"}
-                  showToTopButton={true}
-                  selected={selectedCategory}
-                  showAlphabeticalIndex={true}
-                  autoGenerateAlphabeticalIndex={true}
-                  selectPlaceholderText={"Select Category..."}
-                  searchPlaceholderText={"Search..."}
-                  requireSelection={false}
-                  autoSort={false}
-                />
-              </Col>
-            </Row>
-            <Row style={[styles.transactionInputRow, { height: 45 }]}>
-              <Col size={2}>
-                <Label style={[texts.montserratRegular, texts.font_16]}>
-                  Note:
-                </Label>
-              </Col>
-            </Row>
-            <Row
-              style={[
-                {
-                  paddingLeft: 45,
-                  paddingRight: 40,
-                  marginBottom: 20,
-                  height: 75,
-                },
-              ]}
-            >
-              <Input
+              </Row>
+              <Row
                 style={[
-                  styleSheetMain.labelBlack,
-                  {
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#4EAE58",
-                  },
+                  styles.transactionInputRow,
+                  widths.width_100,
+                  alignments.center,
+                  { height: 85 },
                 ]}
-                multiline={true}
-                onChange={handleTransactionNoteOnChange}
-                value={transactionNote}
-              />
-            </Row>
-            <Row
-              style={[
-                styles.transactionInputRow,
-                widths.width_100,
-                alignments.center,
-                { height: 85 },
-              ]}
-            >
-              <Button
-                style={[
-                  styleSheetMain.primaryButton,
-                  buttons.radius_18,
-                  { marginTop: 30 },
-                ]}
-                onPress={handleAddTransactionOnSubmit}
               >
-                <Text style={[colors.white, texts.montserratRegular]}>
-                  Update
-                </Text>
-              </Button>
-            </Row>
-          </KeyboardAwareScrollView>
-        </View>
+                <Button
+                  style={[
+                    styleSheetMain.primaryButton,
+                    buttons.radius_18,
+                    { marginTop: 30 },
+                  ]}
+                  onPress={handleAddTransactionOnSubmit}
+                >
+                  <Text style={[colors.white, texts.montserratRegular]}>
+                    Update
+                  </Text>
+                </Button>
+              </Row>
+            </KeyboardAwareScrollView>
+          </View>
+        )}
       </Grid>
     </Container>
   );

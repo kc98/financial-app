@@ -69,10 +69,12 @@ export default function TransactionContainer(props) {
           return (
             <TransactionListRow
               key={index}
+              id={row.id}
               category={row.category}
               description={row.description}
               amount={row.amount}
               type={row.type}
+              navigation={props.navigation}
             />
           );
         else {

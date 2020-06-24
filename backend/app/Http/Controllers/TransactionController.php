@@ -32,16 +32,17 @@ class TransactionController extends Controller
         // Get previous amount
         $previousStartOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth")->subMonth();
         $previousEndOfMonth = Carbon::parse("last day of $selectedYear-$selectedMonth")->subMonth();
-        $previousTransactions = $user->transactions()->whereBetween('created_at', [$previousStartOfMonth, $previousEndOfMonth])->get();
-        $previousAmount = 0;
+        // $previousTransactions = $user->transactions()->whereBetween('created_at', [$previousStartOfMonth, $previousEndOfMonth])->get();
+        $previousTransactions = $user->transactions()->where('created_at', '<', $startOfMonth)->get();
+        $openingBalance = 0;
 
         foreach ($previousTransactions as $previousTransaction) {
-            $previousAmount += $previousTransaction->amount;
+            $openingBalance += $previousTransaction->amount;
         }
 
         $payload = [
             'transactions' => $transactions,
-            'previous_amount' => $previousAmount,
+            'opening_balance' => $openingBalance,
         ];
 
         return response()->json($payload);

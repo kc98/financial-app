@@ -117,19 +117,19 @@ export default function TransactionList({ navigation }) {
     loadData();
   }, []);
 
-  const checkUserToken = async () => {
-    try {
-      let token = await AsyncStorage.getItem("token");
-      let response = await api.me(token);
-    } catch (error) {
-      console.log(error.response.data);
-      await AsyncStorage.clear();
-      return navigation.navigate("EntrancePage");
-    }
-  };
+  // const checkUserToken = async () => {
+  //   try {
+  //     let token = await AsyncStorage.getItem("token");
+  //     let response = await api.me(token);
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //     await AsyncStorage.clear();
+  //     return navigation.navigate("EntrancePage");
+  //   }
+  // };
 
   const loadData = async () => {
-    await checkUserToken();
+    // await checkUserToken();
     try {
       setIsLoading(true);
       let token = await AsyncStorage.getItem("token");
@@ -137,7 +137,7 @@ export default function TransactionList({ navigation }) {
       let month = moment().format("MMMM");
       let year = moment().format("YYYY");
       let response = await api.getTransactionList(token, month, year);
-      let transactionData = response.data.sort(
+      let transactionData = response.data.transactions.sort(
         (a, b) =>
           moment(b.timestamp).format("YYYYMMDD") -
           moment(a.timestamp).format("YYYYMMDD")
@@ -145,7 +145,13 @@ export default function TransactionList({ navigation }) {
       setTransactionData(transactionData);
       setIsLoading(false);
     } catch (error) {
-      console.log(error.response.data);
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
     }
   };
 
@@ -169,6 +175,7 @@ export default function TransactionList({ navigation }) {
           dayOfWeek={moment(row.timestamp).format("dddd")}
           monthYear={moment(row.timestamp).format("MMM YYYY")}
           transactionData={transactionData}
+          navigation={navigation}
         />
       );
     }
@@ -243,10 +250,8 @@ export default function TransactionList({ navigation }) {
                 <Text style={{ fontSize: 15 }}>Total Expenses:</Text>
               </Col>
               <Col style={[styleSheetMain.rightContainer, { marginRight: 10 }]}>
-                <Text style={{ fontSize: 15 }}>- RM </Text>
-
                 <Text style={{ fontSize: 15 }}>
-                  {parseFloat(totalExpense).toFixed(2)}
+                  - MYR {parseFloat(totalExpense).toFixed(2)}
                 </Text>
               </Col>
             </Row>
@@ -260,9 +265,8 @@ export default function TransactionList({ navigation }) {
                 <Text style={{ fontSize: 15 }}>Total Income:</Text>
               </Col>
               <Col style={[styleSheetMain.rightContainer, { marginRight: 10 }]}>
-                <Text style={{ fontSize: 15 }}>+ RM </Text>
                 <Text style={{ fontSize: 15 }}>
-                  {parseFloat(totalIncome).toFixed(2)}
+                  + MYR {parseFloat(totalIncome).toFixed(2)}
                 </Text>
               </Col>
             </Row>
@@ -288,9 +292,8 @@ export default function TransactionList({ navigation }) {
                   },
                 ]}
               >
-                <Text style={{ fontSize: 15, fontWeight: "bold" }}>RM </Text>
                 <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                  {parseFloat(totalIncome - totalExpense).toFixed(2)}
+                  MYR {parseFloat(totalIncome - totalExpense).toFixed(2)}
                 </Text>
               </Col>
             </Row>
