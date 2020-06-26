@@ -40,7 +40,7 @@ import TransactionDataRow from "./TransactionDataRow";
 import * as api from "../api";
 
 //{ navigation }
-export default function ReportPage() {
+export default function ReportPage({ navigation }) {
   const [transactionData, setTransactionData] = useState([]);
   const [openingBalance, setOpeningBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +66,6 @@ export default function ReportPage() {
     try {
       setIsLoading(true);
       let token = await AsyncStorage.getItem("token");
-      console.log(token);
       let month = moment().subtract(4, "months").format("MMMM");
       let year = moment().format("YYYY");
       let response = await api.getTransactionList(token, month, year);
@@ -213,13 +212,19 @@ export default function ReportPage() {
             <View style={{ height: "100%" }}>
               <TransactionDataRow
                 title="Expense"
+                type="expense"
                 transactionData={expenseArray}
+                categoryCombine={true}
                 navigateTo={"ReportDetailPage"}
+                directTo={"category"}
               />
               <TransactionDataRow
                 title="Income"
+                type="income"
                 transactionData={incomeArray}
+                categoryCombine={true}
                 navigateTo={"ReportDetailPage"}
+                directTo={"category"}
               />
             </View>
           )}

@@ -8,6 +8,9 @@ const texts = StyleSheet.create({
   montserratRegular: {
     fontFamily: "Montserrat_Regular",
   },
+  montserratMedium: {
+    fontFamily: "Montserrat_Medium",
+  },
   font_26: {
     fontSize: 26,
   },

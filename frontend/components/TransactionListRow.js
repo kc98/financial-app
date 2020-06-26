@@ -10,20 +10,6 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 
 export default function TransactionListRow(props) {
   let totalAmount = 0;
-  // const dataRow = props.transactionData.map((row, index) => {
-  //   totalAmount += row.amount;
-  //   let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
-  //   return (
-  //     <TransactionContainer
-  //     key={index}
-  //             date="9"
-  //             dayOfWeek="Sunday"
-  //             monthYear="May 2020"
-  //             transactionType="expense"
-  //             transactionCategory="fuel"
-  //           />
-  //   );
-  // });
 
   let cost = true;
   if (props.type == "income") {

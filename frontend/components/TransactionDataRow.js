@@ -20,13 +20,13 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
+import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import TransactionReportList from "./TransactionReportList";
 
 export default function TransactionDataRow(props) {
-  // console.log(props);
   const navigation = useNavigation();
 
   function compare(a, b) {
@@ -52,20 +52,23 @@ export default function TransactionDataRow(props) {
   transactionArray = props.transactionData.sort(compare);
   for (let i = 0; i < transactionArray.length; i++) {
     totalAmount += transactionArray[i].amount;
-
-    if (transactionArray[i].category != categoryName) {
-      categoryName = transactionArray[i].category;
-      arrangedTransactionArray.push(transactionArray[i]);
+    if (props.categoryCombine) {
+      if (transactionArray[i].category != categoryName) {
+        categoryName = transactionArray[i].category;
+        arrangedTransactionArray.push(transactionArray[i]);
+      } else {
+        let index = arrangedTransactionArray.length - 1;
+        arrangedTransactionArray[index].amount += transactionArray[i].amount;
+      }
     } else {
-      let index = arrangedTransactionArray.length - 1;
-      arrangedTransactionArray[index].amount += transactionArray[i].amount;
+      arrangedTransactionArray = transactionArray;
     }
   }
 
   let descTransactionData = arrangedTransactionArray.sort((a, b) => {
     return b.amount - a.amount;
   });
-
+  let direct;
   const dataRow = descTransactionData.map((row, index) => {
     var ColorCode =
       "hsl(" +
@@ -75,15 +78,23 @@ export default function TransactionDataRow(props) {
       "%," +
       (55 + 5 * Math.random()) +
       "%)";
+    if (props.directTo == "transaction") {
+      direct = "transactionId: " + row.id;
+    } else if (props.directTo == "reportDetail") {
+      direct = "category: " + row.category;
+    }
 
     return (
       <TransactionReportList
         key={index}
-        name={row.category}
+        id={row.id}
+        name={props.categoryCombine ? row.category : row.description}
         amount={parseFloat(row.amount).toFixed(2)}
+        timestamp={row.timestamp}
         percentage={parseFloat((row.amount / totalAmount) * 100).toFixed(2)}
         colorCode={ColorCode}
         navigateTo={props.navigateTo}
+        directTo={props.directTo}
       />
     );
   });
@@ -106,6 +117,7 @@ export default function TransactionDataRow(props) {
             {props.title}
           </Text>
         </Row>
+
         <Col
           style={[
             {
@@ -117,6 +129,60 @@ export default function TransactionDataRow(props) {
             },
           ]}
         >
+          <Row
+            style={[
+              {
+                width: "100%",
+                height: 40,
+                alignItems: "center",
+
+                marginTop: 10,
+              },
+            ]}
+          >
+            <Col size={5}>
+              <Text
+                style={[
+                  texts.montserratMedium,
+                  texts.font_15,
+                  { alignItems: "center" },
+                ]}
+              >
+                Transaction Description
+              </Text>
+            </Col>
+            <Col size={3}>
+              <Text
+                style={[
+                  alignments.center,
+                  texts.montserratMedium,
+                  texts.font_15,
+                ]}
+              >
+                Amount
+              </Text>
+            </Col>
+            <Col
+              size={1.8}
+              style={[
+                alignments.center,
+                {
+                  height: "100%",
+                  backgroundColor: props.colorCode,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  texts.montserratMedium,
+                  texts.font_15,
+                  { textAlign: "center" },
+                ]}
+              >
+                {props.type == "income" ? "Average Income" : "Average Spent"}
+              </Text>
+            </Col>
+          </Row>
           {dataRow}
         </Col>
       </View>

@@ -100,7 +100,6 @@ export default function UserProfilePage({ navigation }) {
     }
   };
 
-  console.log(userData);
   return (
     <Container>
       <Header transparent />

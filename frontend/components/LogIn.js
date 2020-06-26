@@ -154,6 +154,7 @@ export default function LogIn({ navigation }) {
                   style={texts.montserratRegular}
                   onChange={handleEmailValueOnChange}
                   onBlur={handleEmailBlur}
+                  keyboardType="email-address"
                 />
               </Item>
               <Text

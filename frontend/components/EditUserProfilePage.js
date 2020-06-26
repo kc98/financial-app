@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   Container,
@@ -21,6 +21,7 @@ import { StyleSheet, Image, Dimensions, TextInput, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -30,11 +31,11 @@ import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
 
-export default function EditUserProfilePage({ navigation }) {
-  const user = { id: 1, name: "Yeap Khor Chin", email: "testing@gmail.com" };
+import * as api from "../api";
 
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+export default function EditUserProfilePage({ navigation }) {
+  const [name, setName] = useState(null);
+  const [email, setEmail] = useState(null);
 
   const handleNameOnChange = (event) => {
     let inputName = event.nativeEvent.text;
@@ -73,7 +74,28 @@ export default function EditUserProfilePage({ navigation }) {
   const handleChangePasswordOnSubmit = () => {
     return navigation.navigate("ChangePasswordPage");
   };
+  useEffect(() => {
+    checkUserToken();
+  }, []);
+  const [userData, setUserData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const checkUserToken = async () => {
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.me(token);
+      let userData = response.data;
+      setUserData(userData);
+      setName(userData.name);
+      setEmail(userData.email);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error.response.data);
+      await AsyncStorage.clear();
+      return navigation.navigate("EntrancePage");
+    }
+  };
   return (
     <Container>
       <Header transparent />
@@ -122,7 +144,7 @@ export default function EditUserProfilePage({ navigation }) {
                   { fontSize: 16 },
                 ]}
               >
-                YEAP KHOR CHIN
+                {userData.name}
               </Text>
             </Row>
             <View

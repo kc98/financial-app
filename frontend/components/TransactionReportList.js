@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import moment from "moment";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -31,12 +32,43 @@ import ReportDetailPage from "./ReportDetailPage";
 
 export default function TransactionReportList(props) {
   const navigation = useNavigation();
+
+  let direct;
+  let month = null;
+  let year = null;
+
+  if (props.directTo == "transactionId") {
+    direct = props.id;
+  } else if (props.directTo == "category") {
+    direct = props.name;
+    month = moment(props.timestamp).format("MMMM");
+    year = moment(props.timestamp).format("YYYY");
+  }
+
+  // const toTransactionDetail = () => {
+  //   navigation.navigate(props.navigateTo, {
+  //     transactionId: direct,
+  //   });
+  // };
+
+  // const toReportDetail = () => {
+  //   navigation.navigate(props.navigateTo, {
+  //     transactionId: direct,
+  //     month: month,
+  //     year: year,
+  //   });
+  // };
+
   return (
     <TouchableOpacity
       style={{ backgroundColor: null }}
-      onPress={() => {
-        return navigation.navigate(props.navigateTo);
-      }}
+      onPress={() =>
+        navigation.navigate(props.navigateTo, {
+          transactionId: direct,
+          month: month,
+          year: year,
+        })
+      }
     >
       <Row
         style={[
@@ -58,7 +90,9 @@ export default function TransactionReportList(props) {
               { alignItems: "center" },
             ]}
           >
-            {props.name}
+            {props.name.length <= 35
+              ? `${props.name}`
+              : `${props.name.substring(0, 30)}...`}
           </Text>
         </Col>
         <Col size={3}>
