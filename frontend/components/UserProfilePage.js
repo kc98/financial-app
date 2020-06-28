@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -41,12 +41,22 @@ import { widths } from "../styles/widths";
 import * as api from "../api";
 
 export default function UserProfilePage({ navigation }) {
+  const [userData, setUserData] = useGlobal("userData");
+  const [isLoading, setIsLoading] = useState(false);
+  const [refresh, reload] = useGlobal("refresh");
+
+  useEffect(() => {
+    getUser();
+  }, [refresh]);
+
   const handlePreferencesOnPress = () => {
     return navigation.navigate("PreferencePage");
   };
 
   const handleProfileChangeOnPress = () => {
-    return navigation.navigate("EditUserProfilePage");
+    return navigation.navigate("EditUserProfilePage", {
+      onBack: () => navigation.refresh(),
+    });
   };
 
   const handleLogoutAlertYesOnPress = async () => {
@@ -79,24 +89,24 @@ export default function UserProfilePage({ navigation }) {
       ]
     );
   };
-  useEffect(() => {
-    checkUserToken();
-  }, []);
-  const [userData, setUserData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const checkUserToken = async () => {
+  const getUser = async () => {
     try {
       setIsLoading(true);
       let token = await AsyncStorage.getItem("token");
       let response = await api.me(token);
-      let userData = response.data;
-      setUserData(userData);
+
+      let userData2 = response.data;
+      setUserData(userData2);
+
       setIsLoading(false);
     } catch (error) {
       console.log(error.response.data);
-      await AsyncStorage.clear();
-      return navigation.navigate("EntrancePage");
+      try {
+        await AsyncStorage.clear();
+      } finally {
+        return navigation.navigate("EntrancePage");
+      }
     }
   };
 

@@ -31,6 +31,37 @@ export function me(token) {
   });
 }
 
+export function updateProfile(token, name, email) {
+  return Axios.put(
+    `${BACKEND_URL}/profile`,
+    qs.stringify({
+      name,
+      email,
+    }),
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
+export function updatePassword(token, old_password, password) {
+  return Axios.put(
+    `${BACKEND_URL}/profile/password`,
+    qs.stringify({
+      old_password,
+      password,
+    }),
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
+
 export function getTransactionList(token, month, year) {
   return Axios.get(`${BACKEND_URL}/transactions`, {
     headers: {

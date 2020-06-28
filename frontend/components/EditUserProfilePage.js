@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -34,8 +34,12 @@ import { widths } from "../styles/widths";
 import * as api from "../api";
 
 export default function EditUserProfilePage({ navigation }) {
-  const [name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [userData, setUserData] = useGlobal("userData");
+  const [name, setName] = useState(userData.name);
+  const [email, setEmail] = useState(userData.email);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refresh, reload] = useGlobal("refresh");
 
   const handleNameOnChange = (event) => {
     let inputName = event.nativeEvent.text;
@@ -47,19 +51,28 @@ export default function EditUserProfilePage({ navigation }) {
     setEmail(inputEmail);
   };
 
-  const handleUpdateProfileOnSubmit = () => {
+  const handleUpdateProfileOnSubmit = async () => {
     if (!email || !name) {
-      setName(user.name);
-      setEmail(user.email);
+      setName(userData.name);
+      setEmail(userData.email);
       Alert.alert("Invalid Data", "Your name and email cannot be empty.", [
         { text: "OK" },
       ]);
     } else {
-      Alert.alert(
-        "Update successfully!",
-        "Your profile has been updated. name: " + name + " email: " + email,
-        [{ text: "OK", onPress: () => navigation.goBack() }]
-      );
+      try {
+        let token = await AsyncStorage.getItem("token");
+        let response = await api.updateProfile(token, name, email);
+
+        reload(!refresh);
+
+        Alert.alert("Update successfully!", "Your profile has been updated.", [
+          { text: "OK", onPress: () => navigation.goBack() },
+        ]);
+      } catch (error) {
+        setErrorMessage(error.response.data.error);
+
+        return;
+      }
     }
   };
 
@@ -74,28 +87,30 @@ export default function EditUserProfilePage({ navigation }) {
   const handleChangePasswordOnSubmit = () => {
     return navigation.navigate("ChangePasswordPage");
   };
-  useEffect(() => {
-    checkUserToken();
-  }, []);
-  const [userData, setUserData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const checkUserToken = async () => {
-    try {
-      setIsLoading(true);
-      let token = await AsyncStorage.getItem("token");
-      let response = await api.me(token);
-      let userData = response.data;
-      setUserData(userData);
-      setName(userData.name);
-      setEmail(userData.email);
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error.response.data);
-      await AsyncStorage.clear();
-      return navigation.navigate("EntrancePage");
-    }
-  };
+  // const getUser = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     let token = await AsyncStorage.getItem("token");
+  //     let response = await api.me(token);
+  //     let backendUserData = response.data;
+  //     setUserData(backendUserData);
+  //     setName(userData.name);
+  //     setEmail(userData.email);
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //     try {
+  //       await AsyncStorage.clear();
+  //     } finally {
+  //       return navigation.navigate("EntrancePage");
+  //     }
+  //   }
+  // };
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
+
   return (
     <Container>
       <Header transparent />

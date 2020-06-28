@@ -33,7 +33,6 @@ import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
-import YearMonthPicker from "./YearMonthPicker";
 import TransactionReportList from "./TransactionReportList";
 import TransactionDataRow from "./TransactionDataRow";
 
@@ -91,15 +90,6 @@ export default function ReportDetailPage(props) {
       }
     }
   };
-  console.log(categoryTransactionData);
-  // const categoryTransactionData = [
-  //   { key: 1, name: "Food", totalAmount: 300, percentage: "46%" },
-  //   { key: 2, name: "Movie", totalAmount: 200, percentage: "31%" },
-  //   { key: 3, name: "Parking", totalAmount: 150, percentage: "23%" },
-  //   { key: 4, name: "Printing", totalAmount: 50, percentage: "13%" },
-  //   { key: 5, name: "Shopping", totalAmount: 50, percentage: "13%" },
-  //   { key: 6, name: "Printing", totalAmount: 130, percentage: "2%" },
-  // ];
 
   return (
     <Container>

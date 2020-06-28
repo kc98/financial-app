@@ -312,6 +312,7 @@ export default function TransactionDetailPage(props) {
                 </Col>
                 <Col size={3} style={{ height: 30 }}>
                   <Input
+                    type
                     placeholder="0.00"
                     returnKeyType="done"
                     style={[
@@ -323,7 +324,7 @@ export default function TransactionDetailPage(props) {
                     ]}
                     keyboardType="numeric"
                     onChange={handleAmountOnChange}
-                    value={amount}
+                    value={amount.toString()}
                   />
                 </Col>
               </Row>

@@ -26,7 +26,6 @@ import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
-import YearMonthPicker from "./YearMonthPicker";
 import PreferencePage from "./PreferencePage";
 import ReportDetailPage from "./ReportDetailPage";
 

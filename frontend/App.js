@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React from "react";
+import React, { setGlobal } from "reactn";
 import { BackHandler } from "react-native";
 import { Asset, AppLoading } from "expo";
 import * as Font from "expo-font";
@@ -21,8 +21,14 @@ import EditUserProfilePage from "./components/EditUserProfilePage";
 import ChangePasswordPage from "./components/ChangePasswordPage";
 import ReportDetailPage from "./components/ReportDetailPage";
 import BudgetSettingPage from "./components/BudgetSettingPage";
+import ReportTransaction from "./components/ReportTransaction";
 
 const Stack = createStackNavigator();
+
+setGlobal({
+  refresh: false,
+  userData: {},
+});
 
 function Chatbot() {
   return (
@@ -231,6 +237,16 @@ export default class App extends React.Component {
             }}
             name="BudgetSettingPage"
             component={BudgetSettingPage}
+          />
+          <Stack.Screen
+            options={{
+              headerTitle: "Transaction Insight",
+              headerBackImage: () => <GoToButton type="goBack" />,
+              headerBackTitleVisible: false,
+              headerTransparent: true,
+            }}
+            name="ReportTransaction"
+            component={ReportTransaction}
           />
         </Stack.Navigator>
       </NavigationContainer>

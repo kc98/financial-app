@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -28,6 +28,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -36,6 +37,8 @@ import { colors } from "../styles/colors";
 import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
+
+import * as api from "../api";
 
 export default function ChangePassworPage({ navigation }) {
   const [oldPassword, setOldPassword] = useState(null);
@@ -59,6 +62,9 @@ export default function ChangePassworPage({ navigation }) {
     secureConfirmPasswordTextEntry,
     setConfirmSecurePasswordTextEntry,
   ] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [userData, setUserData] = useGlobal("userData");
+  const [refresh, reload] = useGlobal("refresh");
 
   const handleShowOldPasswordIconOnPress = () => {
     if (oldPasswordShowIcon == "eye") setOldPasswordShowIcon("eye-off");
@@ -105,7 +111,8 @@ export default function ChangePassworPage({ navigation }) {
     setConfirmPasswordTouched(true);
   };
 
-  const handleChangePasswordOnSubmit = () => {
+  const handleChangePasswordOnSubmit = async () => {
+    setErrorMessage(null);
     if (!oldPassword || !newPassword || !confirmPassword) {
       setOldPassword(null);
       setNewPassword(null);
@@ -114,9 +121,39 @@ export default function ChangePassworPage({ navigation }) {
         { text: "OK" },
       ]);
     } else {
-      Alert.alert("Update successfully!", "Your password has been changed.", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+      try {
+        let token = await AsyncStorage.getItem("token");
+        let response = await api.updatePassword(
+          token,
+          oldPassword,
+          newPassword
+        );
+
+        reload(!refresh);
+        await AsyncStorage.clear();
+
+        Alert.alert("Update successfully!", "Your password has been changed.", [
+          { text: "OK", onPress: () => navigation.navigate("EntrancePage") },
+        ]);
+      } catch (error) {
+        // Connection related error
+        if (error.response) {
+          if (error.response.status == 401) {
+            setErrorMessage("Current Password is invalid");
+          } else if (error.response.status == 422) {
+            setErrorMessage(error.response.data.password);
+          } else {
+            // Unhandled errors
+            console.log(error.response);
+            setErrorMessage("Please contact developer");
+          }
+        } else {
+          // Other errors
+          console.log(error);
+        }
+
+        return;
+      }
     }
   };
 
@@ -131,6 +168,36 @@ export default function ChangePassworPage({ navigation }) {
   const verifyNonEmptyField = oldPassword && newPassword && confirmPassword;
   const duplicateOldPassword = !(oldPassword === newPassword);
   const matchingPassword = newPassword === confirmPassword;
+
+  let errorMessageText = null;
+  if (errorMessage) {
+    errorMessageText = (
+      <View
+        style={[
+          colors.backgroundRed,
+          {
+            flexDirection: "row",
+            alignItems: "center",
+            paddingLeft: 5,
+            paddingTop: 7,
+            paddingBottom: 7,
+            paddingRight: 5,
+            marginBottom: 5,
+            borderRadius: 10,
+          },
+        ]}
+      >
+        <Icon
+          style={[colors.white, { paddingLeft: 5, paddingRight: 10 }]}
+          type="AntDesign"
+          name="closecircleo"
+        />
+        <Text style={[colors.white, texts.montserratRegular]}>
+          {errorMessage}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <Container>
@@ -176,7 +243,7 @@ export default function ChangePassworPage({ navigation }) {
                   { fontSize: 16 },
                 ]}
               >
-                YEAP KHOR CHIN
+                {userData.name}
               </Text>
             </Row>
             <View
@@ -190,6 +257,7 @@ export default function ChangePassworPage({ navigation }) {
                 padding: 25,
               }}
             >
+              {errorMessageText}
               <Form>
                 <Item floatingLabel>
                   <Label style={styleSheetMain.labelBlack}>

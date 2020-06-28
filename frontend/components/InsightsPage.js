@@ -17,6 +17,8 @@ import {
   Button,
 } from "native-base";
 
+import AsyncStorage from "@react-native-community/async-storage";
+
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -59,6 +61,15 @@ export default function InsightsPage({ navigation }) {
   const handleInsightsDetailOnPress = () => {
     return navigation.navigate("InsightsDetailPage");
   };
+  const [test, setTest] = useState(true);
+  const getUser = async () => {
+    // setTest(false);
+    let token = await AsyncStorage.getItem("token");
+    // setTest(true);
+  };
+  getUser();
+  console.log("this is insight page yoooo");
+  console.log(test);
   return (
     <Container>
       <Header transparent />
@@ -109,6 +120,46 @@ export default function InsightsPage({ navigation }) {
               <Text style={[texts.montserratRegular, texts.font_16]}>
                 MYR 800.00
               </Text>
+            </Col>
+          </Row>
+          <Row
+            style={[
+              {
+                height: 30,
+                marginLeft: 20,
+                marginRight: 20,
+                marginTop: 20,
+              },
+            ]}
+          >
+            <Col
+              size={3}
+              style={{
+                alignSelf: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={[texts.montserratBold, texts.font_15]}>
+                Details of your transactions:
+              </Text>
+            </Col>
+            <Col size={1} style={styleSheetMain.centerContainer}>
+              <Button
+                style={[
+                  buttons.primary,
+                  alignments.center,
+                  {
+                    height: 35,
+                    width: 85,
+                    borderRadius: 12,
+                  },
+                ]}
+                onPress={() => navigation.navigate("ReportTransaction")}
+              >
+                <Text style={[texts.montserratRegular, texts.font_16]}>
+                  View
+                </Text>
+              </Button>
             </Col>
           </Row>
           <Row

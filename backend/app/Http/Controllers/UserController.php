@@ -17,7 +17,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      *
      */
-    public function update(Request $request)
+    public function updateProfile(Request $request)
     {
         // Permission
         $user = auth()->userOrFail();
@@ -35,28 +35,37 @@ class UserController extends Controller
         // Update the data
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->save();
 
-        // Special handle password
-        if ($request->has('password') && $request->has('old_password')) {
-            // Make sure old password correct
-            if (!(Hash::check($request->old_password, auth()->user()->password))) {
-                return response()->json([
-                    'error' => 'Unauthorized.'
-                ], 401);
-            }
+        return response()->json([
+            'message' => 'Updated sucessfully.'
+        ]);
+    }
 
-            $validator = Validator::make(request(['password']), [
-                'password' => 'required|min:6',
-            ]);
-            
-            if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
-            }
+    public function updatePassword(Request $request)
+    {
+        // Permission
+        $user = auth()->userOrFail();
 
-            $user->password = bcrypt($request->password);
+        // Make sure old password correct
+        if (!(Hash::check($request->old_password, auth()->user()->password))) {
+            return response()->json([
+                'error' => 'Unauthorized.'
+            ], 401);
         }
 
+        $validator = Validator::make(request(['password']), [
+            'password' => 'required|min:6',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user->password = bcrypt($request->password);
         $user->save();
+
+        auth()->logout();
 
         return response()->json([
             'message' => 'Updated sucessfully.'
