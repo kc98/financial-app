@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -16,6 +16,7 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 import DatePicker from "react-native-datepicker";
 import PickerModal from "react-native-picker-modal-view";
 import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -24,59 +25,62 @@ import { buttons } from "../styles/buttons";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
 
+import * as api from "../api";
+
 export default function AddTransactionPage() {
-  const currentDateTime = new Date();
+  const currentDateTime = moment().format("DD/MM/YYYY, h:mm a");
 
   const [transactionMode, setTransactionMode] = useState(true);
   const [selectedDateTime, setSelectedDateTime] = useState(currentDateTime);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [transactionNote, setTransactionNote] = useState(null);
   const [amount, setAmount] = useState(null);
+  const [categoryData, setCategoryData] = useState([]);
+  const [expenseList, setExpenseList] = useState([]);
+  const [incomeList, setIncomeList] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [refresh, reload] = useGlobal("refresh");
 
-  const expenseList = [
-    { Id: 1, Name: "Expense #1" },
-    { Id: 2, Name: "Expense #2" },
-    { Id: 3, Name: "Expense #3" },
-    { Id: 4, Name: "Expense #4" },
-    { Id: 5, Name: "testing " },
-    { Id: 6, Name: "food" },
-    { Id: 7, Name: "testing " },
-    { Id: 8, Name: "fossssod" },
-    { Id: 9, Name: "testing123" },
-    { Id: 10, Name: "aaaaaaa" },
-    { Id: 11, Name: "bbbbbbb " },
-    { Id: 12, Name: "vvvvvv" },
-    { Id: 13, Name: "xxxxxxxx" },
-    { Id: 14, Name: "zzzzzzzzzz" },
-    { Id: 15, Name: "bbnnnn" },
-    { Id: 16, Name: "qqqqqqq" },
-  ];
+  useEffect(() => {
+    loadCategoryData();
+  }, []);
 
-  const incomeList = [
-    { Id: 1, Name: "Income #1", Value: "Income #1 Value" },
-    { Id: 2, Name: "Income #2", Value: "Income #2 Value" },
-    { Id: 3, Name: "Income #3", Value: "Income #3 Value" },
-    { Id: 4, Name: "Income #4 ", Value: "Income #4 Value" },
-    { Id: 5, Name: "interest testing ", Value: "interest testing Value" },
-    { Id: 6, Name: "Deposit", Value: "Deposit Value" },
-    { Id: 7, Name: "testing111 ", Value: "testing111 Value" },
-    { Id: 8, Name: "food", Value: "food Value" },
-    { Id: 9, Name: "testing321 ", Value: "testing321 Value" },
-    { Id: 10, Name: "mmmmmmmmm", Value: "mmmmmmmmm Value" },
-    { Id: 11, Name: "bbbbbbb ", Value: "bbbbbbb Value" },
-    { Id: 12, Name: "vvvvvv", Value: "vvvvvv Value" },
-    { Id: 13, Name: "xxxxxxxx ", Value: "xxxxxxxx Value" },
-    { Id: 14, Name: "zzzzzzzzzz", Value: "zzzzzzzzzz Value" },
-    { Id: 15, Name: "bbnnnn ", Value: "bbnnnn Value" },
-    { Id: 16, Name: "qqqqqqq", Value: "qqqqqqq Value" },
-  ];
+  const loadCategoryData = async () => {
+    try {
+      let response = await api.getCategoryList();
+      let categoryData = response.data;
+      setCategoryData(categoryData);
+
+      let expenseArray = [];
+      let incomeArray = [];
+
+      for (let i = 0; i < categoryData.length; i++) {
+        if (categoryData[i].transaction_type_id == 2) {
+          expenseArray.push({
+            Id: categoryData[i].id,
+            Name: categoryData[i].category,
+          });
+        } else {
+          incomeArray.push({
+            Id: categoryData[i].id,
+            Name: categoryData[i].category,
+          });
+        }
+      }
+
+      setExpenseList(expenseArray);
+      setIncomeList(incomeArray);
+    } catch (error) {
+      // Unhandled errors
+      console.log(error.response);
+    }
+  };
 
   function switchTransactionMode() {
     setTransactionMode(!transactionMode);
   }
 
   const handleOnDateChange = (datetime) => {
-    let timestamp = new Date().getTime();
     setSelectedDateTime(datetime);
   };
 
@@ -86,7 +90,7 @@ export default function AddTransactionPage() {
   };
 
   const handleCategoryOnSelect = (event) => {
-    let inputCategory = event.Name;
+    let inputCategory = event.Id;
     setSelectedCategory(inputCategory);
   };
 
@@ -95,37 +99,55 @@ export default function AddTransactionPage() {
     setTransactionNote(inputTransactionNote);
   };
 
-  const handleAddTransactionOnSubmit = () => {
-    if (!selectedDateTime || !amount || !selectedCategory) {
-      // setSelectedDate(null);
-      // setAmount(defaultAmount);
-      // setSelectedCategory(null);
-      // setTransactionNote(null);
-    } else {
-      let dateTimeToTimestamp = moment(
-        selectedDateTime,
-        "DD/MM/YYYY, h:mm:ss a"
-      ).format("x");
-      let timestampToDateTime = moment(dateTimeToTimestamp, "x").format(
-        "DD/MM/YYYY, h:mm:ss a"
+  const handleAddTransactionOnSubmit = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.addTransaction(
+        token,
+        transactionNote,
+        parseFloat(amount).toFixed(2),
+        selectedCategory,
+        moment(selectedDateTime, "DD/MM/YYYY, h:mm a").utc().format()
       );
-      let amoutWithTwoDecimal = parseFloat(amount).toFixed(2);
+      reload(!refresh);
+
       Alert.alert(
         "New Transaction is Added",
-        "Date and Time: " +
-          timestampToDateTime +
-          " Amount: " +
-          amoutWithTwoDecimal +
-          " Category: " +
-          selectedCategory +
-          " Note: " +
-          transactionNote,
+        "Your transaction has been added successfully!",
         [{ text: "OK" }]
       );
-      setSelectedDateTime(null);
+      setSelectedDateTime(currentDateTime);
       setAmount(null);
       //setSelectedCategory(null);
       setTransactionNote(null);
+    } catch (error) {
+      if (error.response) {
+        // network errors
+        if (error.response.status == 422) {
+          let errorString = "";
+          for (let errorType of Object.values(error.response.data)) {
+            for (let error of errorType) {
+              errorString += `- ${error}\n`;
+            }
+          }
+
+          errorString = errorString.trim();
+          Alert.alert("Input error", errorString, [{ text: "OK" }]);
+        } else if (error.response.status == 401) {
+          await AsyncStorage.clear();
+          return navigation.navigate("EntrancePage");
+        } else {
+          console.log(error.response.data);
+          Alert.alert("Contact developer", "Network error", [{ text: "OK" }]);
+        }
+      } else {
+        // Unhandled
+        setErrorMessage("Contact developer");
+        console.log(error);
+        Alert.alert("Error", errorMessage, [{ text: "OK" }]);
+      }
+
+      return;
     }
   };
 
@@ -262,7 +284,7 @@ export default function AddTransactionPage() {
                 <PickerModal
                   onSelected={handleCategoryOnSelect}
                   items={transactionMode ? expenseList : incomeList}
-                  sortingLanguage={"tr"}
+                  sortingLanguage={"us"}
                   showToTopButton={true}
                   selected={selectedCategory}
                   showAlphabeticalIndex={true}

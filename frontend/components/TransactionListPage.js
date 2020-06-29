@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -33,10 +33,11 @@ export default function TransactionList({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [refresh, reload] = useGlobal("refresh");
 
   useEffect(() => {
     loadData();
-  }, [date]);
+  }, [date, refresh]);
 
   const loadData = async () => {
     try {

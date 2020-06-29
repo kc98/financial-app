@@ -3,7 +3,7 @@ import Axios from "axios";
 import qs from "querystring";
 
 //change http://localhost:8000/api
-//tom's:http://210.195.9.215:8000/api
+
 const BACKEND_URL = "http://192.168.0.175:8000/api";
 export function login(email, password) {
   return Axios.post(
@@ -77,6 +77,57 @@ export function getTransactionList(token, month, year) {
 
 export function getTransaction(token, id) {
   return Axios.get(`${BACKEND_URL}/transactions/${id}`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+export function addTransaction(token, description, amount, category, date) {
+  return Axios.post(
+    `${BACKEND_URL}/transactions`,
+    qs.stringify({
+      description,
+      amount,
+      category,
+      date,
+    }),
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
+
+export function updateTransaction(
+  token,
+  id,
+  description,
+  amount,
+  category,
+  date
+) {
+  return Axios.put(
+    `${BACKEND_URL}/transactions/${id}`,
+    qs.stringify({
+      description,
+      amount,
+      category,
+      date,
+    }),
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}
+
+export function deleteTransaction(token, id) {
+  return Axios.delete(`${BACKEND_URL}/transactions/${id}`, {
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,

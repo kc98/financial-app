@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Col, Row, Grid } from "react-native-easy-grid";
 import DatePicker from "react-native-datepicker";
 import PickerModal from "react-native-picker-modal-view";
+import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -26,28 +27,44 @@ import { styleSheetMain } from "../styles/styleSheetMain";
 import { widths } from "../styles/widths";
 
 import * as api from "../api";
+import { exp } from "react-native-reanimated";
 
 export default function TransactionDetailPage(props) {
+  const navigation = useNavigation();
+
   const currentDateTime = new Date();
   const transactionId = props.route.params.transactionId;
 
+  const [transactionMode, setTransactionMode] = useState(null);
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [transactionNote, setTransactionNote] = useState(null);
+  const [amount, setAmount] = useState(null);
+  const [categoryData, setCategoryData] = useState([]);
+  const [expenseList, setExpenseList] = useState([]);
+  const [incomeList, setIncomeList] = useState([]);
   const [transactionData, setTransactionData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCategoryLoading, setCategoryIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [refresh, reload] = useGlobal("refresh");
+
   let defaultCategory;
+
   useEffect(() => {
     loadData();
-  }, []);
+  }, [refresh]);
 
   const loadData = async () => {
     try {
       setIsLoading(true);
-      await loadCategoryData();
+
       let token = await AsyncStorage.getItem("token");
+
       let response = await api.getTransaction(token, transactionId);
       let transactionData = response.data;
       setTransactionData(transactionData);
-
       setSelectedDateTime(
         moment(transactionData.timestamp).format("DD/MM/YYYY, h:mm a")
       );
@@ -62,6 +79,9 @@ export default function TransactionDetailPage(props) {
       } else {
         setTransactionMode(true);
       }
+
+      await loadCategoryData();
+
       setIsLoading(false);
     } catch (error) {
       if (error.response.status == 401) {
@@ -75,51 +95,42 @@ export default function TransactionDetailPage(props) {
   };
   let dateTime = moment(transactionData.timestamp).format("DD/MM/YYYY, h:mm a");
 
-  const [transactionMode, setTransactionMode] = useState(null);
-  const [selectedDateTime, setSelectedDateTime] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [transactionNote, setTransactionNote] = useState(null);
-  const [amount, setAmount] = useState(0);
-  const [categoryData, setCategoryData] = useState([]);
-  const [expenseList, setExpenseList] = useState([]);
-  const [incomeList, setIncomeList] = useState([]);
-
   const loadCategoryData = async () => {
-    try {
-      setCategoryIsLoading(true);
-      let response = await api.getCategoryList();
-      let categoryData = response.data;
-      setCategoryData(categoryData);
+    if (!isLoading) {
+      try {
+        setCategoryIsLoading(true);
+        let response = await api.getCategoryList();
+        let categoryData = response.data;
+        setCategoryData(categoryData);
 
-      // if (CategoriesData.type != "expense") {
-      //   setTransactionMode(false);
-      // } else {
-      //   setTransactionMode(true);
-      // }
+        let expenseArray = [];
+        let incomeArray = [];
 
-      let expenseArray = [];
-      let incomeArray = [];
-
-      for (let i = 0; i < categoryData.length; i++) {
-        if (categoryData[i].transaction_type_id == 2) {
-          expenseArray.push({
-            Id: categoryData[i].id,
-            Name: categoryData[i].category,
-          });
-        } else {
-          incomeArray.push({
-            Id: categoryData[i].id,
-            Name: categoryData[i].category,
-          });
+        for (let i = 0; i < categoryData.length; i++) {
+          if (categoryData[i].category == transactionData.category) {
+            setSelectedCategoryId(categoryData[i].id);
+          }
+          if (categoryData[i].transaction_type_id == 2) {
+            expenseArray.push({
+              Id: categoryData[i].id,
+              Name: categoryData[i].category,
+            });
+          } else {
+            incomeArray.push({
+              Id: categoryData[i].id,
+              Name: categoryData[i].category,
+            });
+          }
         }
-      }
 
-      setExpenseList(expenseArray);
-      setIncomeList(incomeArray);
-      setCategoryIsLoading(false);
-    } catch (error) {
-      // Unhandled errors
-      console.log(error.response);
+        setExpenseList(expenseArray);
+        setIncomeList(incomeArray);
+
+        setCategoryIsLoading(false);
+      } catch (error) {
+        // Unhandled errors
+        console.log(error.response);
+      }
     }
   };
 
@@ -139,7 +150,9 @@ export default function TransactionDetailPage(props) {
 
   const handleCategoryOnSelect = (event) => {
     let inputCategory = event.Name;
+    let inputCategoryId = event.Id;
     setSelectedCategory(inputCategory);
+    setSelectedCategoryId(inputCategoryId);
   };
 
   const handleTransactionNoteOnChange = (event) => {
@@ -147,43 +160,90 @@ export default function TransactionDetailPage(props) {
     setTransactionNote(inputTransactionNote);
   };
 
-  const handleAddTransactionOnSubmit = () => {
-    if (!selectedDateTime || !amount || !selectedCategory) {
-      // setSelectedDate(null);
-      // setAmount(defaultAmount);
-      // setSelectedCategory(null);
-      // setTransactionNote(null);
-    } else {
-      let dateTimeToTimestamp = moment(
-        selectedDateTime,
-        "DD/MM/YYYY, h:mm:ss a"
-      ).format("x");
-      let timestampToDateTime = moment(dateTimeToTimestamp, "x").format(
-        "DD/MM/YYYY, h:mm:ss a"
+  const handleUpdateTransactionOnSubmit = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.updateTransaction(
+        token,
+        transactionId,
+        transactionNote,
+        parseFloat(amount).toFixed(2),
+        selectedCategoryId,
+        moment(selectedDateTime, "DD/MM/YYYY, h:mm a").utc().format()
       );
-      let amoutWithTwoDecimal = parseFloat(amount).toFixed(2);
-      let categoryString = selectedCategory.Name
-        ? selectedCategory.Name
-        : selectedCategory;
+      reload(!refresh);
 
       Alert.alert(
         "Transaction is Updated",
-        "Date and Time: " +
-          timestampToDateTime +
-          " Amount: " +
-          amoutWithTwoDecimal +
-          " Category: " +
-          categoryString +
-          " Note: " +
-          transactionNote,
+        "Your transaction is updated successfully!",
         [{ text: "OK" }]
       );
-      setSelectedDateTime(timestampToDateTime);
-      setAmount(amoutWithTwoDecimal);
+    } catch (error) {
+      if (error.response) {
+        // network errors
+        if (error.response.status == 422) {
+          let errorString = "";
+          for (let errorType of Object.values(error.response.data)) {
+            for (let error of errorType) {
+              errorString += `- ${error}\n`;
+            }
+          }
 
-      //setCategory not sure yet, need to be confirmed once iterate with database
-      setSelectedCategory(selectedCategory);
-      setTransactionNote(transactionNote);
+          errorString = errorString.trim();
+          Alert.alert("Input error", errorString, [{ text: "OK" }]);
+        } else if (error.response.status == 401) {
+          await AsyncStorage.clear();
+          return navigation.navigate("EntrancePage");
+        } else {
+          Alert.alert("Contact developer", "Network error", [{ text: "OK" }]);
+        }
+      } else {
+        // Unhandled
+        setErrorMessage("Contact developer");
+        console.log(error);
+        Alert.alert("Error", errorMessage, [{ text: "OK" }]);
+      }
+
+      return;
+    }
+  };
+
+  const handleDeleteTransactionOnSubmit = () => {
+    Alert.alert(
+      "Delete Confirmation",
+      "Are you sure to delete this transaction?",
+      [{ text: "No" }, { text: "Yes", onPress: deleteTransactionRecord }]
+    );
+  };
+
+  const deleteTransactionRecord = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.deleteTransaction(token, transactionId);
+      reload(!refresh);
+
+      Alert.alert(
+        "Your Transaction is Removed",
+        "Your transaction has been deleted successfully!",
+        [{ text: "OK", onPress: () => navigation.goBack() }]
+      );
+    } catch (error) {
+      if (error.response) {
+        // network errors
+        if (error.response.status == 401) {
+          await AsyncStorage.clear();
+          return navigation.navigate("EntrancePage");
+        } else {
+          console.log(error.response.data);
+          Alert.alert("Contact developer", "Network error", [{ text: "OK" }]);
+        }
+      } else {
+        // Unhandled
+        setErrorMessage("Contact developer");
+        console.log(error);
+        Alert.alert("Error", errorMessage, [{ text: "OK" }]);
+      }
+      // return;
     }
   };
 
@@ -191,7 +251,7 @@ export default function TransactionDetailPage(props) {
     <Container>
       <Header transparent />
       <Grid style={[colors.backgroundGrey]}>
-        {isLoading ? (
+        {isLoading && isCategoryLoading ? (
           <View
             style={[
               {
@@ -212,7 +272,7 @@ export default function TransactionDetailPage(props) {
             style={[
               colors.backgroundWhite,
               widths.width_100,
-              { marginTop: 40, marginBottom: 35, height: 550 },
+              { marginTop: 40, marginBottom: 35 },
             ]}
           >
             <Row
@@ -324,7 +384,7 @@ export default function TransactionDetailPage(props) {
                     ]}
                     keyboardType="numeric"
                     onChange={handleAmountOnChange}
-                    value={amount.toString()}
+                    value={amount}
                   />
                 </Col>
               </Row>
@@ -394,10 +454,36 @@ export default function TransactionDetailPage(props) {
                     buttons.radius_18,
                     { marginTop: 30 },
                   ]}
-                  onPress={handleAddTransactionOnSubmit}
+                  onPress={handleUpdateTransactionOnSubmit}
                 >
                   <Text style={[colors.white, texts.montserratRegular]}>
                     Update
+                  </Text>
+                </Button>
+              </Row>
+              <Row
+                style={[
+                  widths.width_100,
+                  alignments.center,
+                  {
+                    paddingLeft: 45,
+                    paddingRight: 40,
+
+                    alignItems: "center",
+                    height: 85,
+                  },
+                ]}
+              >
+                <Button
+                  style={[
+                    styleSheetMain.secondaryButton,
+                    buttons.radius_18,
+                    { marginTop: 30, borderWidth: 1, marginBottom: 20 },
+                  ]}
+                  onPress={handleDeleteTransactionOnSubmit}
+                >
+                  <Text style={[colors.black, texts.montserratRegular]}>
+                    Delete
                   </Text>
                 </Button>
               </Row>

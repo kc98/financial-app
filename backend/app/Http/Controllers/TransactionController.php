@@ -56,11 +56,14 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        $date = request('date');
+        request()->offsetSet('date', Carbon::parse($date));
+
         $validator = Validator::make(request(['description', 'amount', 'category', 'date']), [
             'description' => 'required|max:300',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'category' => 'required',
-            'date' => 'required',
+            'date' => 'date',
         ]);
         
         if ($validator->fails()) {
@@ -110,6 +113,9 @@ class TransactionController extends Controller
      */
     public function update(Request $request, int $transaction)
     {
+        $date = request('date');
+        request()->offsetSet('date', Carbon::parse($date));
+        
         $validator = Validator::make(request(['description', 'amount', 'category', 'date']), [
             'description' => 'required|max:300',
             'amount' => 'required|regex:/^\d+(\.\d{1,2})?$/',
@@ -158,7 +164,7 @@ class TransactionController extends Controller
             ], 404);
         }
 
-        Transaction::find($transaction)->first()->delete();
+        Transaction::find($transaction)->delete();
 
         return response()->json([
             'message' => 'Transaction is deleted',

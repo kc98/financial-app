@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import {
   Text,
   Container,
@@ -47,6 +47,7 @@ export default function ReportDetailPage(props) {
   const [categoryTransactionData, setCategoryTransactionData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [categoryType, setCategoryType] = useState(null);
+  const [refresh, reload] = useGlobal("refresh");
 
   let defaultCategory;
 
@@ -54,7 +55,7 @@ export default function ReportDetailPage(props) {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [refresh]);
 
   const loadData = async () => {
     try {
