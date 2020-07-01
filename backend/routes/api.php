@@ -48,8 +48,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/transactions/{transaction}', 'TransactionController@update'); // Edit
     Route::post('/transactions', 'TransactionController@store'); // Add
     Route::delete('/transactions/{transaction}', 'TransactionController@destroy'); // Delete
-
-    
 });
 
 Route::get('/categories', 'CategoryController@index'); // Browse
@@ -59,6 +57,10 @@ Route::get('/categories', 'CategoryController@index'); // Browse
  * 1. [ ] User can generate their monthly insight
  * 2. [ ] User can set their own insight monthly budget (and regenerate the insight)
  */
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('/insights', 'InsightController@show'); // Get insight (Read)
+    Route::put('/insights', 'InsightController@update'); // Update insight budget (Edit)
+});
 
 /**
  * Phase 3: Chat bot commands

@@ -1,10 +1,12 @@
 // import * as data from "./data";
 import Axios from "axios";
 import qs from "querystring";
+import moment from "moment";
 
 //change http://localhost:8000/api
 
 const BACKEND_URL = "http://192.168.0.175:8000/api";
+
 export function login(email, password) {
   return Axios.post(
     `${BACKEND_URL}/login`,
@@ -20,7 +22,21 @@ export function login(email, password) {
   );
 }
 
-export function signup() {}
+export function signup(name, email, password) {
+  return Axios.post(
+    `${BACKEND_URL}/signup`,
+    qs.stringify({
+      name,
+      email,
+      password,
+    }),
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  );
+}
 
 export function me(token) {
   return Axios.get(`${BACKEND_URL}/me`, {
@@ -90,7 +106,7 @@ export function addTransaction(token, description, amount, category, date) {
       description,
       amount,
       category,
-      date,
+      date: moment(date).format("YYYY-MM-DD[T]HH:mm:ss[Z]"),
     }),
     {
       headers: {
@@ -115,7 +131,7 @@ export function updateTransaction(
       description,
       amount,
       category,
-      date,
+      date: moment(date).format("YYYY-MM-DD[T]HH:mm:ss[Z]"),
     }),
     {
       headers: {

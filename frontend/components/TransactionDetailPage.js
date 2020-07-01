@@ -44,9 +44,9 @@ export default function TransactionDetailPage(props) {
   const [categoryData, setCategoryData] = useState([]);
   const [expenseList, setExpenseList] = useState([]);
   const [incomeList, setIncomeList] = useState([]);
-  const [transactionData, setTransactionData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCategoryLoading, setCategoryIsLoading] = useState(false);
+  const [transactionData, setTransactionData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCategoryLoading, setCategoryIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [refresh, reload] = useGlobal("refresh");
 
@@ -59,14 +59,13 @@ export default function TransactionDetailPage(props) {
   const loadData = async () => {
     try {
       setIsLoading(true);
-
       let token = await AsyncStorage.getItem("token");
 
       let response = await api.getTransaction(token, transactionId);
       let transactionData = response.data;
       setTransactionData(transactionData);
       setSelectedDateTime(
-        moment(transactionData.timestamp).format("DD/MM/YYYY, h:mm a")
+        moment(transactionData.timestamp).utc().format("DD/MM/YYYY, h:mm a")
       );
 
       defaultCategory = { Name: transactionData.category };
@@ -81,7 +80,6 @@ export default function TransactionDetailPage(props) {
       }
 
       await loadCategoryData();
-
       setIsLoading(false);
     } catch (error) {
       if (error.response.status == 401) {
@@ -96,7 +94,7 @@ export default function TransactionDetailPage(props) {
   let dateTime = moment(transactionData.timestamp).format("DD/MM/YYYY, h:mm a");
 
   const loadCategoryData = async () => {
-    if (!isLoading) {
+    if (Object.keys(transactionData).length > 0) {
       try {
         setCategoryIsLoading(true);
         let response = await api.getCategoryList();
@@ -131,6 +129,8 @@ export default function TransactionDetailPage(props) {
         // Unhandled errors
         console.log(error.response);
       }
+    } else {
+      reload(!refresh);
     }
   };
 
@@ -169,7 +169,7 @@ export default function TransactionDetailPage(props) {
         transactionNote,
         parseFloat(amount).toFixed(2),
         selectedCategoryId,
-        moment(selectedDateTime, "DD/MM/YYYY, h:mm a").utc().format()
+        moment(selectedDateTime, "DD/MM/YYYY, h:mm a").format()
       );
       reload(!refresh);
 

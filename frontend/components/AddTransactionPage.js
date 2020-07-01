@@ -107,7 +107,7 @@ export default function AddTransactionPage() {
         transactionNote,
         parseFloat(amount).toFixed(2),
         selectedCategory,
-        moment(selectedDateTime, "DD/MM/YYYY, h:mm a").utc().format()
+        moment(selectedDateTime, "DD/MM/YYYY, h:mm a").format()
       );
       reload(!refresh);
 

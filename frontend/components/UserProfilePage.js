@@ -186,7 +186,7 @@ export default function UserProfilePage({ navigation }) {
                 <Col size={2}>
                   <Text style={texts.montserratBold}>Name:</Text>
                 </Col>
-                <Col size={3}>
+                <Col size={4}>
                   <Text style={texts.montserratRegular}>{userData.name}</Text>
                 </Col>
               </Row>
@@ -194,7 +194,7 @@ export default function UserProfilePage({ navigation }) {
                 <Col size={2}>
                   <Text style={texts.montserratBold}>Email:</Text>
                 </Col>
-                <Col size={3}>
+                <Col size={4}>
                   <Text style={texts.montserratRegular}>{userData.email}</Text>
                 </Col>
               </Row>

@@ -167,7 +167,7 @@ export default function ReportPage({ navigation }) {
                 >
                   <Text style={{ fontSize: 15 }}>
                     {openingBalance < 0 ? "-" : "+"} MYR{" "}
-                    {parseFloat(openingBalance).toFixed(2)}
+                    {parseFloat(Math.abs(openingBalance)).toFixed(2)}
                   </Text>
                 </Col>
               </Row>
@@ -189,7 +189,7 @@ export default function ReportPage({ navigation }) {
                       : "+"}{" "}
                     MYR{" "}
                     {parseFloat(
-                      openingBalance - totalExpense + totalIncome
+                      Math.abs(openingBalance - totalExpense + totalIncome)
                     ).toFixed(2)}
                   </Text>
                 </Col>

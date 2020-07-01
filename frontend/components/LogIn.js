@@ -134,7 +134,7 @@ export default function LogIn({ navigation }) {
                 marginTop: "6%",
                 ...styleSheetMain.logoImage,
               }}
-              source={require("../img/logo.png")}
+              source={require("../img/appLogo.png")}
               resizeMode="contain"
             />
           </View>

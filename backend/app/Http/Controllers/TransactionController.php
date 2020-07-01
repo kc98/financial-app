@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use \Carbon\Carbon;
 use Validator;
 use App\Category;
+use App\TransactionType;
 
 class TransactionController extends Controller
 {
@@ -25,19 +26,22 @@ class TransactionController extends Controller
         $user = auth()->userOrFail();
 
         $startOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth");
-        $endOfMonth = Carbon::parse("last day of $selectedYear-$selectedMonth");
+        $endOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth")->addMonth();
+        // $endOfMonth = Carbon::parse("last day of $selectedYear-$selectedMonth");
 
         $transactions = $user->transactions()->whereBetween('created_at', [$startOfMonth, $endOfMonth])->get();
 
         // Get previous amount
-        $previousStartOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth")->subMonth();
-        $previousEndOfMonth = Carbon::parse("last day of $selectedYear-$selectedMonth")->subMonth();
-        // $previousTransactions = $user->transactions()->whereBetween('created_at', [$previousStartOfMonth, $previousEndOfMonth])->get();
         $previousTransactions = $user->transactions()->where('created_at', '<', $startOfMonth)->get();
         $openingBalance = 0;
 
         foreach ($previousTransactions as $previousTransaction) {
-            $openingBalance += $previousTransaction->amount;
+            if ($previousTransaction->category()->first()
+                ->transactionType()->first()->transaction_type == 'income') {
+                $openingBalance += $previousTransaction->amount;
+            } else {
+                $openingBalance -= $previousTransaction->amount;
+            }
         }
 
         $payload = [

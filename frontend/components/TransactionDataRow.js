@@ -217,7 +217,7 @@ export default function TransactionDataRow(props) {
           ]}
         >
           <Text style={[texts.montserratRegular, texts.font_14]}>
-            There is not any {props.title} record in this month.
+            There is no {props.title} record in this month.
           </Text>
         </Row>
       </View>

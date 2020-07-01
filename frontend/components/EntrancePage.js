@@ -32,7 +32,7 @@ export default function EntrancePage({ navigation }) {
         <Row size={4}>
           <Image
             style={styleSheetMain.logoImage}
-            source={require("../img/logo.png")}
+            source={require("../img/appLogo.png")}
             resizeMode="contain"
           />
         </Row>

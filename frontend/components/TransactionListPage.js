@@ -222,7 +222,7 @@ export default function TransactionList({ navigation }) {
                       { paddingTop: 40, paddingLeft: 10, paddingRight: 10 },
                     ]}
                   >
-                    There is no trasaction in this month.
+                    There is no transaction in this month.
                   </Text>
                 </View>
               )}

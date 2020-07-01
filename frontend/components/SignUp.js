@@ -24,11 +24,14 @@ import {
   Alert,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { styleSheetMain } from "../styles/styleSheetMain";
 import { texts } from "../styles/texts";
-import GoToButton from "./GoToButton";
+import { colors } from "../styles/colors";
 import { ScrollView } from "react-native-gesture-handler";
+
+import * as api from "../api";
 
 export default function SignUp({ navigation }) {
   const [name, setName] = useState(null);
@@ -50,6 +53,8 @@ export default function SignUp({ navigation }) {
   const [confirmPasswordShowIcon, setConfirmPasswordShowIcon] = useState(
     "eye-off"
   );
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleShowPasswordIconOnPress = () => {
     if (passwordShowIcon == "eye") setPasswordShowIcon("eye-off");
@@ -105,22 +110,64 @@ export default function SignUp({ navigation }) {
     setConfirmPasswordTouched(true);
   };
 
-  const handleSignUpOnSubmit = () => {
+  const handleSignUpOnSubmit = async () => {
     if (!nameTouched || !email || !password || !confirmPassword) {
       setName(null);
       setEmail(null);
       setPassword(null);
       setConfirmPassword(null);
     } else {
-      Alert.alert("Welcome " + name + "!", " You have signed up successfully", [
-        { text: "OK" },
-      ]);
-      return navigation.navigate("MainPage");
+      try {
+        let response = await api.signup(name, email, password);
+        await AsyncStorage.setItem("token", response.data.token);
+
+        Alert.alert(
+          "Welcome " + name + "!",
+          " You have signed up successfully",
+          [{ text: "OK" }]
+        );
+
+        return navigation.navigate("MainPage");
+      } catch (error) {
+        setErrorMessage(error.response.data.error);
+
+        return;
+      }
     }
   };
 
   const verifyNonEmptyField = name && email && password && confirmPassword;
   const matchingPassword = password === confirmPassword;
+
+  let errorMessageText = null;
+  if (errorMessage) {
+    errorMessageText = (
+      <View
+        style={[
+          colors.backgroundRed,
+          {
+            flexDirection: "row",
+            alignItems: "center",
+            paddingLeft: 5,
+            paddingTop: 7,
+            paddingBottom: 7,
+            paddingRight: 5,
+            marginBottom: 5,
+            borderRadius: 10,
+          },
+        ]}
+      >
+        <Icon
+          style={[colors.white, { paddingLeft: 5, paddingRight: 10 }]}
+          type="AntDesign"
+          name="closecircleo"
+        />
+        <Text style={[colors.white, texts.montserratRegular]}>
+          {errorMessage}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <Container>
@@ -130,7 +177,7 @@ export default function SignUp({ navigation }) {
           <View style={{ flex: 2 }}>
             <Image
               style={styleSheetMain.logoImage}
-              source={require("../img/logo.png")}
+              source={require("../img/appLogo.png")}
               resizeMode="contain"
             />
           </View>
@@ -141,6 +188,7 @@ export default function SignUp({ navigation }) {
               marginRight: "12%",
             }}
           >
+            {errorMessageText}
             <Form>
               <Item floatingLabel>
                 <Label style={styleSheetMain.labelBlack}>Name</Label>
