@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useGlobal } from "reactn";
 import { Text, Container, Header, Input, Button } from "native-base";
 
 import { StyleSheet, Alert } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -12,27 +13,78 @@ import { buttons } from "../styles/buttons";
 import { widths } from "../styles/widths";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
+import * as api from "../api";
+
 export default function BudgetSettingPage({ navigation }) {
   const [budgetAmount, setBudgetAmount] = useState(null);
-  let budgetAmoutWithTwoDecimal = parseFloat(budgetAmount).toFixed(2);
+  const [refresh, reload] = useGlobal("refresh");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, [refresh]);
+
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+
+      let response = await api.getBudget(token);
+
+      let budgetData = response.data.budget;
+
+      setBudgetAmount(parseFloat(budgetData).toFixed(2));
+      setIsLoading(false);
+    } catch (error) {
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
+    }
+  };
+
   const handlebudgetAmountOnChange = (event) => {
     let budgetAmountInput = event.nativeEvent.text;
     setBudgetAmount(budgetAmountInput);
   };
 
-  const handleBudgetChangeOnPress = () => {
+  const handleBudgetUpdateOnPress = async () => {
     if (!budgetAmount) {
       setBudgetAmount(null);
       Alert.alert("Invalid Budget Amount", "Budget amount cannot be empty.", [
         { text: "OK" },
       ]);
-    } else {
+    } else if (budgetAmount < 100) {
       Alert.alert(
-        "Update successfully!",
-        "Your budget amount has been changed.\nBudget Amount: " +
-          budgetAmoutWithTwoDecimal,
-        [{ text: "OK", onPress: () => navigation.goBack() }]
+        "Invalid Budget Amount",
+        "Budget amount cannot less than MYR 100.00.",
+        [{ text: "OK" }]
       );
+    } else {
+      try {
+        let token = await AsyncStorage.getItem("token");
+        let response = await api.updateBudget(token, budgetAmount);
+
+        Alert.alert(
+          "Update successfully!",
+          "Your budget amount has been changed."[
+            { text: "OK", onPress: () => navigation.goBack() }
+          ]
+        );
+
+        reload(!refresh);
+
+        Alert.alert("Update successfully!", "Your profile has been updated.", [
+          { text: "OK", onPress: () => navigation.goBack() },
+        ]);
+      } catch (error) {
+        console.log(error.response);
+
+        return;
+      }
     }
   };
 
@@ -93,7 +145,7 @@ export default function BudgetSettingPage({ navigation }) {
         >
           <Button
             style={[styles.primaryButtonRadius25, widths.width_40]}
-            onPress={handleBudgetChangeOnPress}
+            onPress={handleBudgetUpdateOnPress}
           >
             <Text style={[styleSheetMain.buttonTextMedium, colors.white]}>
               Save

@@ -158,3 +158,27 @@ export function getCategoryList() {
     },
   });
 }
+
+export function getBudget(token) {
+  return Axios.get(`${BACKEND_URL}/insights/budget`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function updateBudget(token, budget) {
+  return Axios.put(
+    `${BACKEND_URL}/insights/budget`,
+    qs.stringify({
+      budget,
+    }),
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}

@@ -74,12 +74,13 @@ export default function TransactionList({ navigation }) {
       totalIncome += row.amount;
     }
 
-    if (moment(row.timestamp).date() != currentDay) {
-      currentDay = moment(row.timestamp).date();
+    if (moment(row.timestamp).utc().date() != currentDay) {
+      currentDay = moment(row.timestamp).utc().date();
+
       return (
         <TransactionContainer
           key={index}
-          date={moment(row.timestamp).format("DD")}
+          date={moment(row.timestamp).utc().format("DD")}
           dayOfWeek={moment(row.timestamp).format("dddd")}
           monthYear={moment(row.timestamp).format("MMM YYYY")}
           transactionData={transactionData}

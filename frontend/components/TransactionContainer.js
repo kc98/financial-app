@@ -17,7 +17,7 @@ export default function TransactionContainer(props) {
   const dataRow = props.transactionData.map((row, index) => {
     let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
 
-    if (moment(row.timestamp).date() == props.date) {
+    if (moment(row.timestamp).utc().date() == props.date) {
       // TODO
       if (row.type == "expense") {
         totalExpense += row.amount;
@@ -65,7 +65,7 @@ export default function TransactionContainer(props) {
       </Row>
 
       {props.transactionData.map((row, index) => {
-        if (moment(row.timestamp).date() == props.date)
+        if (moment(row.timestamp).utc().date() == props.date)
           return (
             <TransactionListRow
               key={index}

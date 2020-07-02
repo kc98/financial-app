@@ -59,7 +59,8 @@ Route::get('/categories', 'CategoryController@index'); // Browse
  */
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/insights', 'InsightController@show'); // Get insight (Read)
-    Route::put('/insights', 'InsightController@update'); // Update insight budget (Edit)
+    Route::get('/insights/budget', 'InsightController@showBudget'); // Get insight budget (Read)
+    Route::put('/insights/budget', 'InsightController@updateBudget'); // Update insight budget (Edit)
 });
 
 /**

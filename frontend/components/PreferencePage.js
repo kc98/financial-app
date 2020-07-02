@@ -1,45 +1,51 @@
-import React, { useState } from "react";
-import {
-  Text,
-  Container,
-  Header,
-  Left,
-  Body,
-  Right,
-  Content,
-  View,
-  Form,
-  Input,
-  Label,
-  Item,
-  Icon,
-  Title,
-  Button,
-  Switch,
-} from "native-base";
+import React, { useState, useEffect, useGlobal } from "reactn";
+import { Text, Container, Header, View, Icon, Switch } from "native-base";
 
-import {
-  StyleSheet,
-  Image,
-  Dimensions,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { TouchableOpacity } from "react-native";
 import { Col, Row, Grid } from "react-native-easy-grid";
+import AsyncStorage from "@react-native-community/async-storage";
 
-import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
-import GoToButton from "./GoToButton";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
-export default function PreferencePage({ navigation }) {
-  const [dailyReminder, setDailyReminder] = useState(true);
+import * as api from "../api";
 
+export default function PreferencePage({ navigation }) {
+  const [refresh, reload] = useGlobal("refresh");
+  const [dailyReminder, setDailyReminder] = useState(true);
+  const [budgetData, setBudgetData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const handleDailyReminderOnChange = () => {
     setDailyReminder(!dailyReminder);
   };
+
+  useEffect(() => {
+    loadData();
+  }, [refresh, budgetData]);
+
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+
+      let response = await api.getBudget(token);
+
+      let budgetData = response.data.budget;
+
+      setBudgetData(budgetData);
+      setIsLoading(false);
+    } catch (error) {
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
+    }
+  };
+
   return (
     <Container>
       <Header transparent />
@@ -156,7 +162,11 @@ export default function PreferencePage({ navigation }) {
                 </Text>
               </Col>
               <Col size={3} style={[styleSheetMain.rightContainer]}>
-                <Text style={[colors.primary, texts.font_14]}>800</Text>
+                <Text style={[colors.primary, texts.font_14]}>
+                  {budgetData > 0
+                    ? parseFloat(budgetData).toFixed(2)
+                    : "Not Set"}
+                </Text>
               </Col>
               <Col size={1} style={[styleSheetMain.rightContainer]}>
                 <Icon
