@@ -26,8 +26,8 @@ class TransactionController extends Controller
         $user = auth()->userOrFail();
 
         $startOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth");
-        $endOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth")->addMonth();
-        // $endOfMonth = Carbon::parse("last day of $selectedYear-$selectedMonth");
+        // $endOfMonth = Carbon::parse("first day of $selectedYear-$selectedMonth")->addMonth();
+        $endOfMonth = Carbon::parse("last day of $selectedYear-$selectedMonth")->endOfDay();
 
         $transactions = $user->transactions()->whereBetween('created_at', [$startOfMonth, $endOfMonth])->get();
 

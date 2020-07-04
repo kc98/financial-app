@@ -55,7 +55,7 @@ Route::get('/categories', 'CategoryController@index'); // Browse
 /**
  * Phase 2: Insight
  * 1. [ ] User can generate their monthly insight
- * 2. [ ] User can set their own insight monthly budget (and regenerate the insight)
+ * 2. [X] User can set their own insight weekly budget (and regenerate the insight)
  */
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/insights', 'InsightController@show'); // Get insight (Read)
