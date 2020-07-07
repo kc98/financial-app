@@ -111,12 +111,7 @@ export default function ReportAnalyse({ navigation }) {
             </View>
           ) : (
             <View>
-              <Col
-                style={[
-                  colors.backgroundWhite,
-                  { padding: 10, marginBottom: 30, marginTop: 30 },
-                ]}
-              >
+              <Col style={[{ padding: 10, marginBottom: 30, marginTop: 30 }]}>
                 <Row
                   style={{
                     height: 30,
