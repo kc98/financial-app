@@ -29,7 +29,6 @@ import TransactionInsightDataRow from "./TransactionInsightDataRow";
 export default function TransactionInsightRow(props) {
   const navigation = useNavigation();
 
-  console.log(props.insightData);
   //   transactionArray = props.transactionData.sort(compare);
   //   for (let i = 0; i < transactionArray.length; i++) {
   //     totalAmount += transactionArray[i].amount;

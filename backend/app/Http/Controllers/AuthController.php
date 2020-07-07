@@ -81,7 +81,13 @@ class AuthController extends Controller
             
         }
 
-        $payload['monthly_average_spending'] = $totalAmount / $totalMonths;
+        if($totalMonths > 0) 
+        {
+            $payload['monthly_average_spending'] = $totalAmount / $totalMonths;
+        } else {
+            $payload['monthly_average_spending'] = 0;
+        }
+        
 
         return response()->json($payload);
     }
