@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -60,6 +61,28 @@ class AuthController extends Controller
 
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+        $payload = $user;
+
+        $transactions = $user->transactions()->get()->toArray();
+
+        usort($transactions, function ($a, $b) {
+            return Carbon::parse($a['timestamp'])->greaterThan(Carbon::parse($b['timestamp']));
+        });
+
+        $firstTransaction = $transactions[0];
+        $totalMonths = Carbon::now()->diffInMonths(Carbon::parse($firstTransaction['timestamp']));
+
+        $totalAmount = 0;
+        foreach ($transactions as $transaction) {
+            if($transaction['type'] == 'expense') {
+                $totalAmount += $transaction['amount'];
+            }
+            
+        }
+
+        $payload['monthly_average_spending'] = $totalAmount / $totalMonths;
+
+        return response()->json($payload);
     }
 }

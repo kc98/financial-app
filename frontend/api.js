@@ -5,7 +5,7 @@ import moment from "moment";
 
 //change http://localhost:8000/api
 
-const BACKEND_URL = "http://192.168.0.135:8000/api";
+const BACKEND_URL = "http://192.168.0.178:8000/api";
 
 export function login(email, password) {
   return Axios.post(
@@ -181,4 +181,13 @@ export function updateBudget(token, budget) {
       },
     }
   );
+}
+
+export function getSavingPlan(token) {
+  return Axios.get(`${BACKEND_URL}/insights`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }

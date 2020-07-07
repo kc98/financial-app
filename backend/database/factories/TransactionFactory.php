@@ -14,8 +14,8 @@ $factory->define(Transaction::class, function (Faker $faker) {
 
     return [
         'description' => $faker->sentence($nbWords = 4, $variableNbWords = true),
-        'amount' => $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 200),
-        'category_id' => $faker->numberBetween($min = 1, $max = $categoryCount),
+        'amount' => $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 100),
+        'category_id' => $faker->numberBetween($min = 1, $max = 5),
         'user_id'=> $faker->numberBetween($min = 1, $max = $userCount),
         'created_at' => $createTime = $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
         'updated_at' => $createTime,

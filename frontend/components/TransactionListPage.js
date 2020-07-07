@@ -81,8 +81,8 @@ export default function TransactionList({ navigation }) {
         <TransactionContainer
           key={index}
           date={moment(row.timestamp).utc().format("DD")}
-          dayOfWeek={moment(row.timestamp).format("dddd")}
-          monthYear={moment(row.timestamp).format("MMM YYYY")}
+          dayOfWeek={moment(row.timestamp).utc().format("dddd")}
+          monthYear={moment(row.timestamp).utc().format("MMM YYYY")}
           transactionData={transactionData}
           navigation={navigation}
         />

@@ -1,29 +1,12 @@
-import React, { useState } from "react";
-import {
-  Text,
-  Container,
-  Header,
-  Left,
-  Body,
-  Right,
-  Content,
-  View,
-  Form,
-  Input,
-  Label,
-  Item,
-  Icon,
-  Title,
-  Button,
-} from "native-base";
-
-import AsyncStorage from "@react-native-community/async-storage";
+import React, { useState, useEffect, useGlobal } from "reactn";
+import { Text, Container, Header, View, Button } from "native-base";
 
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import moment from "moment";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { alignments } from "../styles/alignments";
 import { texts } from "../styles/texts";
@@ -33,43 +16,80 @@ import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 import InsightsDateRow from "./InsightsDateRow";
 
+import * as api from "../api";
+
 export default function InsightsPage({ navigation }) {
-  // const insightData = [
-  //   { key: 1, time: "Morning", name: "Food", amount: 5 },
-  //   { key: 2, time: "Morning", name: "Movie", amount: 20 },
-  //   { key: 3, time: "Afternoon", name: "Food", amount: 10 },
-  //   { key: 4, time: "Afternoon", name: "Parking", amount: 10 },
-  //   { key: 5, time: "Afternoon", name: "Shopping", amount: 50 },
-  //   { key: 6, time: "Night", name: "Food", amount: 10 },
-  //   { key: 7, time: "Night", name: "Printing", amount: 5 },
-  // ];
-  const morningInsight = [
-    { key: 1, name: "Food", amount: 5.8 },
-    { key: 2, name: "Movie", amount: 21 },
-  ];
+  const [refresh, reload] = useGlobal("refresh");
+  const [isLoading, setIsLoading] = useState(false);
+  const [budgetAmount, setBudgetAmount] = useState(null);
+  const [savingPlan, setSavingPlan] = useState(null);
+  const [savingPlanPeriod, setSavingPlanPeriod] = useState([]);
+  const [userData, setUserData] = useGlobal("userData");
 
-  const afternoonInsight = [
-    { key: 1, name: "Food", amount: 10.5 },
-    { key: 2, name: "Parking", amount: 10 },
-    { key: 3, name: "Shopping", amount: 50 },
-  ];
+  useEffect(() => {
+    loadData();
+  }, [refresh]);
 
-  const nightInsight = [
-    { key: 1, name: "Food", amount: 10 },
-    { key: 2, name: "Printing", amount: 5 },
-  ];
+  let savingPlanData;
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+
+      let response = await api.getSavingPlan(token);
+      let savingPlan = response.data;
+
+      setSavingPlan(savingPlan);
+
+      savingPlanData = savingPlan.map((row, index) => {
+        if (row.day == moment().format("dddd").toLowerCase()) {
+          setSavingPlanPeriod(row.period);
+        }
+      });
+
+      await getUserInfo();
+      setIsLoading(false);
+    } catch (error) {
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
+    }
+  };
+
+  const getUserInfo = async () => {
+    try {
+      setIsLoading(true);
+      let token = await AsyncStorage.getItem("token");
+      let response = await api.me(token);
+
+      let userData = response.data;
+      setUserData(userData);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error.response.data);
+      try {
+        await AsyncStorage.clear();
+      } finally {
+        return navigation.navigate("EntrancePage");
+      }
+    }
+  };
+
+  // const getTodaySavingPlan = () => {
+  //   moment().format("dddd");
+
+  // }
+  // getTodaySavingPlan();
+
   const handleInsightsDetailOnPress = () => {
     return navigation.navigate("InsightsDetailPage");
   };
-  const [test, setTest] = useState(true);
-  const getUser = async () => {
-    // setTest(false);
-    let token = await AsyncStorage.getItem("token");
-    // setTest(true);
-  };
-  getUser();
-  console.log("this is insight page yoooo");
-  console.log(test);
+
   return (
     <Container>
       <Header transparent />
@@ -80,136 +100,154 @@ export default function InsightsPage({ navigation }) {
             justifyContent: "space-between",
           }}
         >
-          <Row
-            style={[
-              {
-                height: 30,
-                marginLeft: 20,
-                marginRight: 20,
-                marginTop: 40,
-              },
-            ]}
-          >
-            <Col size={2}>
-              <Text style={[texts.montserratBold, texts.font_16]}>
-                Average Monthly Spending:
-              </Text>
-            </Col>
-            <Col size={1} style={styleSheetMain.rightContainer}>
-              <Text style={[texts.montserratRegular, texts.font_16]}>
-                MYR 875.80
-              </Text>
-            </Col>
-          </Row>
-          <Row
-            style={[
-              {
-                height: 30,
-                marginLeft: 20,
-                marginRight: 20,
-                marginTop: 20,
-              },
-            ]}
-          >
-            <Col size={2}>
-              <Text style={[texts.montserratBold, texts.font_16]}>
-                Your Budget Amount:
-              </Text>
-            </Col>
-            <Col size={1} style={styleSheetMain.rightContainer}>
-              <Text style={[texts.montserratRegular, texts.font_16]}>
-                MYR 800.00
-              </Text>
-            </Col>
-          </Row>
-          <Row
-            style={[
-              {
-                height: 30,
-                marginLeft: 20,
-                marginRight: 20,
-                marginTop: 20,
-              },
-            ]}
-          >
-            <Col
-              size={3}
-              style={{
-                alignSelf: "center",
-                justifyContent: "center",
-              }}
+          {isLoading ? (
+            <View
+              style={[
+                {
+                  height: "100%",
+                  width: "100%",
+                },
+                alignments.center,
+              ]}
             >
-              <Text style={[texts.montserratBold, texts.font_15]}>
-                Details of your transactions:
-              </Text>
-            </Col>
-            <Col size={1} style={styleSheetMain.centerContainer}>
-              <Button
+              <ActivityIndicator size="large" color="#3C9A46" />
+            </View>
+          ) : (
+            <View>
+              <Row
                 style={[
-                  buttons.primary,
-                  alignments.center,
                   {
-                    height: 35,
-                    width: 85,
-                    borderRadius: 12,
+                    height: 30,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 40,
                   },
                 ]}
-                onPress={() => navigation.navigate("ReportTransaction")}
               >
-                <Text style={[texts.montserratRegular, texts.font_16]}>
-                  View
-                </Text>
-              </Button>
-            </Col>
-          </Row>
-          <Row
-            style={[
-              {
-                height: 35,
-                marginLeft: 20,
-                marginRight: 20,
-                marginTop: 30,
-              },
-            ]}
-          >
-            <Text style={[texts.montserratBold, texts.font_15]}>
-              Saving Plan
-            </Text>
-          </Row>
-          <Col
-            style={[colors.backgroundWhite, { padding: 20, marginBottom: 20 }]}
-          >
-            <InsightsDateRow
-              date={moment().format("DD MMM YYYY")}
-              week={moment().format("dddd")}
-              morningInsightData={morningInsight}
-              afternoonInsightData={afternoonInsight}
-              nightInsightData={nightInsight}
-            />
-            <Col size={1}>
-              <Row>
-                <Button
-                  style={[
-                    buttons.primary,
-                    alignments.center,
-                    widths.width_40,
-                    { height: 35, borderRadius: 12 },
-                  ]}
-                  onPress={handleInsightsDetailOnPress}
-                >
-                  <Text
-                    style={[
-                      texts.montserratRegular,
-                      texts.font_14,
-                      colors.white,
-                    ]}
-                  >
-                    View Details
+                <Col size={2}>
+                  <Text style={[texts.montserratBold, texts.font_16]}>
+                    Average Monthly Spending:
                   </Text>
-                </Button>
+                </Col>
+                <Col size={1} style={styleSheetMain.rightContainer}>
+                  <Text style={[texts.montserratRegular, texts.font_16]}>
+                    MYR{" "}
+                    {parseFloat(userData.monthly_average_spending).toFixed(2)}
+                  </Text>
+                </Col>
               </Row>
-            </Col>
-          </Col>
+              <Row
+                style={[
+                  {
+                    height: 30,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 20,
+                  },
+                ]}
+              >
+                <Col size={2}>
+                  <Text style={[texts.montserratBold, texts.font_16]}>
+                    Your Budget Amount:
+                  </Text>
+                </Col>
+                <Col size={1} style={styleSheetMain.rightContainer}>
+                  <Text style={[texts.montserratRegular, texts.font_16]}>
+                    MYR {parseFloat(userData.budget).toFixed(2)}
+                  </Text>
+                </Col>
+              </Row>
+              <Row
+                style={[
+                  {
+                    height: 30,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 20,
+                  },
+                ]}
+              >
+                <Col
+                  size={3}
+                  style={{
+                    alignSelf: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={[texts.montserratBold, texts.font_15]}>
+                    Details of your transactions:
+                  </Text>
+                </Col>
+                <Col size={1} style={styleSheetMain.centerContainer}>
+                  <Button
+                    style={[
+                      buttons.primary,
+                      alignments.center,
+                      {
+                        height: 35,
+                        width: 85,
+                        borderRadius: 12,
+                      },
+                    ]}
+                    onPress={() => navigation.navigate("ReportTransaction")}
+                  >
+                    <Text style={[texts.montserratRegular, texts.font_16]}>
+                      View
+                    </Text>
+                  </Button>
+                </Col>
+              </Row>
+              <Row
+                style={[
+                  {
+                    height: 35,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 30,
+                  },
+                ]}
+              >
+                <Text style={[texts.montserratBold, texts.font_15]}>
+                  Saving Plan
+                </Text>
+              </Row>
+              <Col
+                style={[
+                  colors.backgroundWhite,
+                  { padding: 20, marginBottom: 20 },
+                ]}
+              >
+                <InsightsDateRow
+                  date={moment().format("DD MMM YYYY")}
+                  week={moment().format("dddd")}
+                  insightData={savingPlanPeriod}
+                />
+                <Col size={1}>
+                  <Row>
+                    <Button
+                      style={[
+                        buttons.primary,
+                        alignments.center,
+                        widths.width_40,
+                        { height: 35, borderRadius: 12 },
+                      ]}
+                      onPress={handleInsightsDetailOnPress}
+                    >
+                      <Text
+                        style={[
+                          texts.montserratRegular,
+                          texts.font_14,
+                          colors.white,
+                        ]}
+                      >
+                        View Details
+                      </Text>
+                    </Button>
+                  </Row>
+                </Col>
+              </Col>
+            </View>
+          )}
         </ScrollView>
       </Grid>
     </Container>

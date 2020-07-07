@@ -30,53 +30,53 @@ setGlobal({
   userData: {},
 });
 
-function Chatbot() {
-  return (
-    <Button transparent>
-      <Icon
-        style={[colors.tertiary, { marginRight: -8 }]}
-        type="MaterialCommunityIcons"
-        name="robot"
-      />
-      <Badge
-        style={{ width: 20, height: 20, borderRadius: 1000, marginBottom: 24 }}
-      >
-        <Text style={{ fontSize: 12 }}>2</Text>
-      </Badge>
-    </Button>
-  );
-}
+// function Chatbot() {
+//   return (
+//     <Button transparent>
+//       <Icon
+//         style={[colors.tertiary, { marginRight: -8 }]}
+//         type="MaterialCommunityIcons"
+//         name="robot"
+//       />
+//       <Badge
+//         style={{ width: 20, height: 20, borderRadius: 1000, marginBottom: 24 }}
+//       >
+//         <Text style={{ fontSize: 12 }}>2</Text>
+//       </Badge>
+//     </Button>
+//   );
+// }
 
-function IconWithBadge({ type, name, badgeCount, color }) {
-  return (
-    <View style={{ width: 24, height: 24, margin: 20 }}>
-      <Icon
-        type={type}
-        name={name}
-        style={[color, { marginTop: -5, marginRight: -5 }]}
-      />
-      {badgeCount > 0 && (
-        <View
-          style={{
-            position: "absolute",
-            right: -11,
-            top: -4.5,
-            backgroundColor: "red",
-            borderRadius: 10,
-            width: 16,
-            height: 16,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 10, fontWeight: "bold" }}>
-            {badgeCount > 9 ? "9+" : badgeCount}
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-}
+// function IconWithBadge({ type, name, badgeCount, color }) {
+//   return (
+//     <View style={{ width: 24, height: 24, margin: 20 }}>
+//       <Icon
+//         type={type}
+//         name={name}
+//         style={[color, { marginTop: -5, marginRight: -5 }]}
+//       />
+//       {badgeCount > 0 && (
+//         <View
+//           style={{
+//             position: "absolute",
+//             right: -11,
+//             top: -4.5,
+//             backgroundColor: "red",
+//             borderRadius: 10,
+//             width: 16,
+//             height: 16,
+//             justifyContent: "center",
+//             alignItems: "center",
+//           }}
+//         >
+//           <Text style={{ color: "white", fontSize: 10, fontWeight: "bold" }}>
+//             {badgeCount > 9 ? "9+" : badgeCount}
+//           </Text>
+//         </View>
+//       )}
+//     </View>
+//   );
+// }
 
 export default class App extends React.Component {
   constructor(props) {
@@ -155,14 +155,14 @@ export default class App extends React.Component {
           <Stack.Screen
             options={{
               headerLeft: () => null,
-              headerRight: () => (
-                <IconWithBadge
-                  type="MaterialCommunityIcons"
-                  name="robot"
-                  badgeCount={99}
-                  color={colors.primary}
-                />
-              ),
+              headerRight: () => null, //(
+              //   <IconWithBadge
+              //     type="MaterialCommunityIcons"
+              //     name="robot"
+              //     badgeCount={99}
+              //     color={colors.primary}
+              //   />
+              // ),
               headerTransparent: true,
             }}
             name="MainPage"

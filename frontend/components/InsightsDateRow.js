@@ -26,37 +26,29 @@ import { styleSheetMain } from "../styles/styleSheetMain";
 import InsightsTimeRow from "./InsightsTimeRow";
 
 export default function InsightsDateRow(props) {
-  // const dataRow = props.insightData.map((row, index) => {
-  //   let amountWithTwoDecimal = parseFloat(row.totalAmount).toFixed(2);
-  //   return (
-  //     <InsightsTimeRow
-  //       key={index}
-  //       time={row.time}
-  //       insightData={props.insightData}
-  //     />
-  //   );
-  // });
-  let totalAmount = 0;
-  const morningTotalAmount = props.morningInsightData.map((row, index) => {
-    totalAmount += row.amount;
+  const dataRow = props.insightData.map((row, index) => {
+    let amountWithTwoDecimal = parseFloat(row.totalAmount).toFixed(2);
+    let name = row.name.charAt(0).toUpperCase() + row.name.slice(1);
+    return <InsightsTimeRow key={index} time={name} data={row.categories} />;
   });
-  const afternoonTotalAmount = props.afternoonInsightData.map((row, index) => {
-    totalAmount += row.amount;
-  });
-  const nightTotalAmount = props.nightInsightData.map((row, index) => {
-    totalAmount += row.amount;
-  });
+
+  // Calculate daily total
+  let dailyTotalAmount = 0;
+  for (let periodData of props.insightData) {
+    for (let categoryData of periodData.categories) {
+      dailyTotalAmount += categoryData.budget;
+    }
+  }
 
   return (
     <View>
       <Row style={{ height: 30, marginBottom: 5, marginTop: 10 }}>
         <Text style={[texts.montserratBold, texts.font_15, colors.tertiary]}>
-          {props.date} ({props.week}): MYR {parseFloat(totalAmount).toFixed(2)}
+          {props.date} ({props.week}): MYR{" "}
+          {parseFloat(dailyTotalAmount).toFixed(2)}
         </Text>
       </Row>
-      <InsightsTimeRow time={"Morning"} data={props.morningInsightData} />
-      <InsightsTimeRow time={"Afternoon"} data={props.afternoonInsightData} />
-      <InsightsTimeRow time={"Night"} data={props.nightInsightData} />
+      {dataRow}
     </View>
   );
 }

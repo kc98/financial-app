@@ -28,8 +28,8 @@ import InsightsTransactionRow from "./InsightsTransactionRow";
 export default function InsightsTimeRow(props) {
   let totalAmount = 0;
   const dataRow = props.data.map((row, index) => {
-    totalAmount += row.amount;
-    let amountWithTwoDecimal = parseFloat(row.amount).toFixed(2);
+    totalAmount += row.budget;
+    let amountWithTwoDecimal = parseFloat(row.budget).toFixed(2);
     return (
       <InsightsTransactionRow
         key={index}

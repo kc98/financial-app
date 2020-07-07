@@ -35,7 +35,6 @@ import { texts } from "../styles/texts";
 import { colors } from "../styles/colors";
 import { styleSheetMain } from "../styles/styleSheetMain";
 
-import TransactionReportList from "./TransactionReportList";
 import TransactionDataRow from "./TransactionDataRow";
 
 import * as api from "../api";
