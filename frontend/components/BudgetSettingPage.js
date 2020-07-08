@@ -16,7 +16,7 @@ import { styleSheetMain } from "../styles/styleSheetMain";
 import * as api from "../api";
 
 export default function BudgetSettingPage({ navigation }) {
-  const [budgetAmount, setBudgetAmount] = useState(null);
+  const [budgetAmount, setBudgetAmount] = useGlobal("budget");
   const [refresh, reload] = useGlobal("refresh");
   const [isLoading, setIsLoading] = useState(false);
 

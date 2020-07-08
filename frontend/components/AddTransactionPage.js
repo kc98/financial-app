@@ -41,8 +41,11 @@ export default function AddTransactionPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [refresh, reload] = useGlobal("refresh");
 
+  const [transactionData, setTransactionData] = useState([]);
+  const [budgetAmount, setBudgetAmount] = useGlobal("budget");
   useEffect(() => {
     loadCategoryData();
+    loadData();
   }, []);
 
   const loadCategoryData = async () => {
@@ -67,6 +70,7 @@ export default function AddTransactionPage() {
           });
         }
       }
+      await loadBudgetData();
 
       setExpenseList(expenseArray);
       setIncomeList(incomeArray);
@@ -76,12 +80,33 @@ export default function AddTransactionPage() {
     }
   };
 
+  const loadData = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+      let month = moment(selectedDateTime, "DD/MM/YYYY, h:mm a").format("MMMM");
+      let year = moment(selectedDateTime, "DD/MM/YYYY, h:mm a").format("YYYY");
+
+      let response = await api.getTransactionList(token, month, year);
+      let transactionData = response.data.transactions;
+      setTransactionData(transactionData);
+    } catch (error) {
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
+    }
+  };
+
   function switchTransactionMode() {
     setTransactionMode(!transactionMode);
   }
 
-  const handleOnDateChange = (datetime) => {
+  const handleOnDateChange = async (datetime) => {
     setSelectedDateTime(datetime);
+    await loadData();
   };
 
   const handleAmountOnChange = (event) => {
@@ -99,6 +124,26 @@ export default function AddTransactionPage() {
     setTransactionNote(inputTransactionNote);
   };
 
+  const loadBudgetData = async () => {
+    try {
+      let token = await AsyncStorage.getItem("token");
+
+      let response = await api.getBudget(token);
+
+      let budgetData = response.data.budget;
+
+      setBudgetAmount(budgetData);
+    } catch (error) {
+      if (error.response.status == 401) {
+        await AsyncStorage.clear();
+        return navigation.navigate("EntrancePage");
+      } else {
+        // Unhandled errors
+        console.log(error.response);
+      }
+    }
+  };
+
   const handleAddTransactionOnSubmit = async () => {
     try {
       let token = await AsyncStorage.getItem("token");
@@ -110,12 +155,36 @@ export default function AddTransactionPage() {
         moment(selectedDateTime, "DD/MM/YYYY, h:mm a").format()
       );
       reload(!refresh);
+      let totalExpense = 0;
 
-      Alert.alert(
-        "New Transaction is Added",
-        "Your transaction has been added successfully!",
-        [{ text: "OK" }]
-      );
+      var i;
+
+      for (i = 0; i < transactionData.length; i++) {
+        if (transactionData[i].type == "expense") {
+          totalExpense += transactionData[i].amount;
+        }
+      }
+
+      let totalSpent = totalExpense + parseFloat(amount);
+      console.log(totalSpent);
+      if (totalSpent > budgetAmount) {
+        Alert.alert(
+          "Warning: Budget Limit Reached",
+          "Transaction is added. However, your spending have exceed the current set budget (MYR " +
+            parseFloat(budgetAmount).toFixed(2) +
+            ") for " +
+            moment(selectedDateTime, "DD/MM/YYYY, h:mm a").format("MMMM") +
+            ".",
+          [{ text: "OK" }]
+        );
+      } else {
+        Alert.alert(
+          "New Transaction is Added",
+          "Your transaction has been added successfully!",
+          [{ text: "OK" }]
+        );
+      }
+
       setSelectedDateTime(currentDateTime);
       setAmount(null);
       //setSelectedCategory(null);

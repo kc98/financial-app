@@ -28,6 +28,7 @@ const Stack = createStackNavigator();
 setGlobal({
   refresh: false,
   userData: {},
+  budget: 0,
 });
 
 // function Chatbot() {
