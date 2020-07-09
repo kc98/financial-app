@@ -175,7 +175,7 @@ export default function InsightsPage({ navigation }) {
                   }}
                 >
                   <Text style={[texts.montserratBold, texts.font_15]}>
-                    Details of your transactions:
+                    Past 12 weeks transactions details:
                   </Text>
                 </Col>
                 <Col size={1} style={styleSheetMain.centerContainer}>

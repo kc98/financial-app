@@ -14,7 +14,7 @@ import * as api from "../api";
 export default function PreferencePage({ navigation }) {
   const [refresh, reload] = useGlobal("refresh");
   const [dailyReminder, setDailyReminder] = useState(true);
-  const [budgetData, setBudgetData] = useGlobal("budget");
+  const [budgetData, setBudgetData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const handleDailyReminderOnChange = () => {
     setDailyReminder(!dailyReminder);

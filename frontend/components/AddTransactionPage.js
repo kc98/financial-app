@@ -42,7 +42,7 @@ export default function AddTransactionPage() {
   const [refresh, reload] = useGlobal("refresh");
 
   const [transactionData, setTransactionData] = useState([]);
-  const [budgetAmount, setBudgetAmount] = useGlobal("budget");
+  const [budgetAmount, setBudgetAmount] = useState(null);
   useEffect(() => {
     loadCategoryData();
     loadData();
@@ -165,8 +165,11 @@ export default function AddTransactionPage() {
         }
       }
 
-      let totalSpent = totalExpense + parseFloat(amount);
-      console.log(totalSpent);
+      let totalSpent = totalExpense;
+      if (transactionMode) {
+        totalSpent = totalExpense + parseFloat(amount);
+      }
+
       if (totalSpent > budgetAmount) {
         Alert.alert(
           "Warning: Budget Limit Reached",
